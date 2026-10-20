@@ -37,6 +37,8 @@ yarn-error.*
 # IDE and editors
 .idea/
 .vscode/
+.claude/
+CLAUDE.md
 
 # typescript
 *.tsbuildinfo
