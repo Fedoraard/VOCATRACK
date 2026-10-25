@@ -20,16 +20,8 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  user: {
-    id: 'user-001',
-    email: 'siswa.vokasi@vocatrack.id',
-    namaLengkap: 'Ahmad Faiz Al-Rasyid',
-    asalSekolah: 'SMKN 1 Cimahi',
-    jurusanDiminati: 'Rekayasa Perangkat Lunak',
-    totalXp: 850,
-    level: 3,
-  },
-  isAuthenticated: true,
+  user: null,
+  isAuthenticated: false,
   selectedJurusanId: 'jur-01',
   jurusanList: MOCK_JURUSAN,
   nodes: MOCK_SKILL_TREE_NODES,

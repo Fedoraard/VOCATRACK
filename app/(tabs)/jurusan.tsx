@@ -1,156 +1,277 @@
-import React, { useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { SearchBar } from '../../components/common/SearchBar';
-import { JurusanCard } from '../../components/jurusan/JurusanCard';
-import { useJurusanSearch } from '../../hooks/useJurusanSearch';
 import { useAppStore } from '../../store/useAppStore';
-import { JurusanVokasi } from '../../utils/types';
+import { CareerTargetModal } from '../../components/jurusan/CareerTargetModal';
+
+interface JurusanItem {
+  id: string;
+  code: string;
+  name: string;
+  iconName: keyof typeof Ionicons.glyphMap;
+}
+
+const JURUSAN_LIST: JurusanItem[] = [
+  {
+    id: 'jur-01',
+    code: 'TKJ',
+    name: 'Teknik Komputer Jaringan',
+    iconName: 'globe-outline',
+  },
+  {
+    id: 'jur-02',
+    code: 'DKV',
+    name: 'Desain Komunikasi Visual',
+    iconName: 'color-palette-outline',
+  },
+  {
+    id: 'jur-03',
+    code: 'TKR',
+    name: 'Teknik Kendaraan Ringan',
+    iconName: 'car-outline',
+  },
+  {
+    id: 'jur-04',
+    code: 'TEI',
+    name: 'Teknik Elektronika Industri',
+    iconName: 'hardware-chip-outline',
+  },
+  {
+    id: 'jur-05',
+    code: 'RPL',
+    name: 'Rekayasa Perangkat Lunak',
+    iconName: 'desktop-outline',
+  },
+  {
+    id: 'jur-06',
+    code: 'TITL',
+    name: 'Teknik Instalasi Tenaga Listrik',
+    iconName: 'flash-outline',
+  },
+];
 
 export default function JurusanScreen() {
-  const {
-    searchQuery,
-    setSearchQuery,
-    selectedCategory,
-    setSelectedCategory,
-    categories,
-    filteredJurusan,
-    handleClearSearch,
-    totalCount,
-  } = useJurusanSearch();
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCode, setSelectedCode] = useState('TKJ');
   const setSelectedJurusanId = useAppStore((state) => state.setSelectedJurusanId);
 
-  // Terapkan useCallback pada onPress item jurusan agar referensi fungsi stabil
-  const handlePressJurusan = useCallback(
-    (jurusan: JurusanVokasi) => {
-      setSelectedJurusanId(jurusan.id);
-      // Navigasi ke Peta Keterampilan (Skill-Tree) untuk jurusan yang dipilih
-      router.push('/(tabs)/skilltree');
-    },
-    [setSelectedJurusanId]
+  const filteredList = JURUSAN_LIST.filter(
+    (item) =>
+      item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderItem = useCallback(
-    ({ item }: { item: JurusanVokasi }) => (
-      <JurusanCard jurusan={item} onPress={handlePressJurusan} />
-    ),
-    [handlePressJurusan]
-  );
-
-  const keyExtractor = useCallback((item: JurusanVokasi) => item.id, []);
+  const handleSelectJurusan = (item: JurusanItem) => {
+    setSelectedJurusanId(item.id);
+    setSelectedCode(item.code);
+    setModalVisible(true);
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerSubtitle}>Eksplorasi Keahlian Vokasi</Text>
-          <Text style={styles.headerTitle}>Pilihan Jurusan & Karir</Text>
-        </View>
+    <View style={styles.container}>
+      <StatusBar style="dark" />
 
-        {/* SearchBar dengan Filter Chips */}
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onClear={handleClearSearch}
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          placeholder="Cari jurusan, keahlian, atau karir..."
-        />
-
-        {/* Info Count */}
-        <View style={styles.countRow}>
-          <Text style={styles.countText}>
-            Menampilkan <Text style={styles.countHighlight}>{totalCount}</Text> program keahlian
-          </Text>
-        </View>
-
-        {/* Optimized FlatList with memoized items and stable callback */}
-        <FlatList
-          data={filteredJurusan}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-          initialNumToRender={5}
-          maxToRenderPerBatch={8}
-          windowSize={5}
-          removeClippedSubviews={true}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>Jurusan Tidak Ditemukan</Text>
-              <Text style={styles.emptyDesc}>
-                Coba gunakan kata kunci lain seperti "IT", "Jaringan", "Desain", atau "Mesin".
-              </Text>
-            </View>
-          }
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* Header Title */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>
+              Pilih <Text style={styles.blueHighlight}>Jurusanmu</Text>, Tentukan
+            </Text>
+            <Text style={styles.headerTitle}>
+              Arah <Text style={styles.blueHighlight}>Kariermu</Text>
+            </Text>
+            <Text style={styles.headerSubtitle}>
+              Temukan jurusan yang sesuai denganmu dan lihat peluang karier,
+              skill yang dibutuhkan, serta jalur belajar yang harus kamu tempuh.
+            </Text>
+          </View>
+
+          {/* Search Bar */}
+          <View style={styles.searchBarContainer}>
+            <Ionicons
+              name="search-outline"
+              size={20}
+              color="#2B7BF6"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Cari jurusan..."
+              placeholderTextColor="#94A3B8"
+              style={styles.searchInput}
+            />
+            <TouchableOpacity style={styles.searchButton} activeOpacity={0.85}>
+              <Text style={styles.searchButtonText}>Search</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Jurusan Cards List */}
+          <View style={styles.cardsList}>
+            {filteredList.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.jurusanCard}
+                activeOpacity={0.85}
+                onPress={() => handleSelectJurusan(item)}
+              >
+                <View style={styles.iconCircle}>
+                  <Ionicons name={item.iconName} size={22} color="#2B7BF6" />
+                </View>
+
+                <View style={styles.cardInfo}>
+                  <Text style={styles.cardCode}>{item.code}</Text>
+                  <Text style={styles.cardName}>{item.name}</Text>
+                </View>
+
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color="#94A3B8"
+                  style={styles.chevronIcon}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* Target Career Popup Modal (Image 2 & 5) */}
+        <CareerTargetModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          jurusanCode={selectedCode}
         />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
   container: {
     flex: 1,
+    backgroundColor: '#D6E8FE',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 32,
   },
   header: {
-    marginTop: 10,
-    marginBottom: 14,
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#4F46E5',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 8,
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: '900',
     color: '#0F172A',
-    marginTop: 2,
+    textAlign: 'center',
+    lineHeight: 28,
   },
-  countRow: {
-    marginBottom: 8,
+  blueHighlight: {
+    color: '#2B7BF6',
   },
-  countText: {
+  headerSubtitle: {
+    fontSize: 12,
+    color: '#475569',
+    textAlign: 'center',
+    lineHeight: 18,
+    marginTop: 8,
+    fontWeight: '500',
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    height: 48,
+    paddingLeft: 14,
+    paddingRight: 6,
+    marginBottom: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 13,
+    color: '#0F172A',
+    fontWeight: '500',
+  },
+  searchButton: {
+    backgroundColor: '#2B7BF6',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+  },
+  searchButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  cardsList: {
+    gap: 10,
+  },
+  jurusanCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#EBF5FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  cardInfo: {
+    flex: 1,
+  },
+  cardCode: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#0F172A',
+  },
+  cardName: {
     fontSize: 12,
     color: '#64748B',
     fontWeight: '500',
+    marginTop: 2,
   },
-  countHighlight: {
-    color: '#4F46E5',
-    fontWeight: '700',
-  },
-  listContent: {
-    paddingBottom: 24,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 48,
-    paddingHorizontal: 24,
-  },
-  emptyTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#334155',
-    marginBottom: 6,
-  },
-  emptyDesc: {
-    fontSize: 13,
-    color: '#94A3B8',
-    textAlign: 'center',
-    lineHeight: 18,
+  chevronIcon: {
+    marginLeft: 8,
   },
 });

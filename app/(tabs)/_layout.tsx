@@ -1,45 +1,59 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FloatingVocaBotButton } from '../../components/common/FloatingVocaBotButton';
 
 export default function TabLayout() {
+  const renderTabLabel = (title: string, focused: boolean) => (
+    <View style={styles.tabLabelContainer}>
+      <Text
+        style={[
+          styles.tabBarLabel,
+          { color: focused ? '#2B7BF6' : '#94A3B8' },
+        ]}
+      >
+        {title}
+      </Text>
+      {focused && <View style={styles.activeDot} />}
+    </View>
+  );
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#4F46E5',
+        tabBarActiveTintColor: '#2B7BF6',
         tabBarInactiveTintColor: '#94A3B8',
         tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarShowLabel: true,
       }}
     >
       {/* Tab 1: Beranda / Dashboard */}
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Beranda',
+          tabBarLabel: ({ focused }) => renderTabLabel('Beranda', focused),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
               size={22}
-              color={(color as string) || (focused ? '#4F46E5' : '#94A3B8')}
+              color={focused ? '#2B7BF6' : '#94A3B8'}
             />
           ),
         }}
       />
 
-      {/* Tab 2: Jurusan (SCR-02) */}
+      {/* Tab 2: Jurusan */}
       <Tabs.Screen
         name="jurusan"
         options={{
-          title: 'Jurusan',
+          tabBarLabel: ({ focused }) => renderTabLabel('Jurusan', focused),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? 'school' : 'school-outline'}
               size={22}
-              color={(color as string) || (focused ? '#4F46E5' : '#94A3B8')}
+              color={focused ? '#2B7BF6' : '#94A3B8'}
             />
           ),
         }}
@@ -49,7 +63,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="vocabot-tab"
         options={{
-          title: 'VocaBot',
+          title: '',
+          tabBarLabel: () => null,
           tabBarButton: () => (
             <View style={styles.floatingCenterContainer}>
               <FloatingVocaBotButton />
@@ -58,22 +73,25 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => {
-            // Mencegah navigasi tab biasa karena ditangani oleh FloatingVocaBotButton
             e.preventDefault();
           },
         }}
       />
 
-      {/* Tab 3: Peta Keterampilan / Skill-Tree (SCR-03) */}
+      {/* Tab 3: Komunitas */}
       <Tabs.Screen
-        name="skilltree"
+        name="komunitas"
         options={{
-          title: 'Skill Tree',
+          tabBarLabel: ({ focused }) => renderTabLabel('Komunitas', focused),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'git-network' : 'git-network-outline'}
+              name={
+                focused
+                  ? 'chatbubble-ellipses'
+                  : 'chatbubble-ellipses-outline'
+              }
               size={22}
-              color={(color as string) || (focused ? '#4F46E5' : '#94A3B8')}
+              color={focused ? '#2B7BF6' : '#94A3B8'}
             />
           ),
         }}
@@ -83,14 +101,22 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profil',
+          tabBarLabel: ({ focused }) => renderTabLabel('Profil', focused),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? 'person' : 'person-outline'}
               size={22}
-              color={(color as string) || (focused ? '#4F46E5' : '#94A3B8')}
+              color={focused ? '#2B7BF6' : '#94A3B8'}
             />
           ),
+        }}
+      />
+
+      {/* Hidden Auxiliary Tab: Skill Tree */}
+      <Tabs.Screen
+        name="skilltree"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
@@ -99,21 +125,33 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: Platform.OS === 'ios' ? 88 : 68,
+    height: Platform.OS === 'ios' ? 88 : 70,
     paddingTop: 8,
     paddingBottom: Platform.OS === 'ios' ? 28 : 10,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#F1F5F9',
-    elevation: 8,
+    elevation: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+  },
+  tabLabelContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 18,
   },
   tabBarLabel: {
-    fontSize: 11,
-    fontWeight: '600',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  activeDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#2B7BF6',
+    marginTop: 2,
   },
   floatingCenterContainer: {
     top: -16,

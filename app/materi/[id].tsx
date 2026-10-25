@@ -1,247 +1,219 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { DualTabSwitcher, ContentTabType } from '../../components/common/DualTabSwitcher';
-import { MOCK_MATERI } from '../../utils/mockData';
+
+const { width } = Dimensions.get('window');
 
 export default function MateriScreen() {
-  const params = useLocalSearchParams<{ id: string; nodeTitle?: string; quizId?: string }>();
-  const [activeTab, setActiveTab] = useState<ContentTabType>('video');
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ id?: string; title?: string }>();
 
-  const materi = MOCK_MATERI['mat-03'];
-  const quizId = params.quizId || 'quiz-03';
+  const title = params.title || 'Pengenalan Dasar: HTML Basic';
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header Title */}
-        <View style={styles.header}>
-          <Text style={styles.jurusanBadge}>{materi.jurusan}</Text>
-          <Text style={styles.title}>{params.nodeTitle || materi.judul}</Text>
-          <Text style={styles.authorText}>Disusun oleh: {materi.penulis}</Text>
-        </View>
+    <View style={styles.container}>
+      <StatusBar style="light" />
 
-        {/* 2-Tab Switcher Component (SCR-04) */}
-        <DualTabSwitcher
-          activeTab={activeTab}
-          onChangeTab={setActiveTab}
-          videoDuration={materi.durasiVideo}
+      {/* Video Thumbnail Header */}
+      <View style={styles.videoWrapper}>
+        <Image
+          source={require('../../assets/materi_video_thumb.png')}
+          style={styles.videoImage}
+          resizeMode="cover"
         />
 
-        {/* Tab 1: Video Terpandu */}
-        {activeTab === 'video' ? (
-          <View style={styles.videoSection}>
-            <View style={styles.videoPlayerCard}>
-              <View style={styles.playIconCircle}>
-                <Ionicons name="play" size={32} color="#FFFFFF" />
-              </View>
-              <Text style={styles.videoPlayerNotice}>
-                Modul Video Interaktif Vokasi
-              </Text>
-              <Text style={styles.videoDurationBadge}>{materi.durasiVideo}</Text>
-            </View>
-
-            <View style={styles.videoNotesBox}>
-              <View style={styles.noteTitleRow}>
-                <Ionicons name="bulb-outline" size={18} color="#4F46E5" />
-                <Text style={styles.noteTitle}>Poin Kunci dari Video:</Text>
-              </View>
-              <Text style={styles.noteBullet}>
-                1. Pemahaman mendalam tentang siklus event loop di JavaScript.
-              </Text>
-              <Text style={styles.noteBullet}>
-                2. Menghindari mutating state secara langsung di arsitektur komponen React.
-              </Text>
-              <Text style={styles.noteBullet}>
-                3. Praktik terbaik struktur data modular untuk sistem pendukung keputusan (SAW).
-              </Text>
-            </View>
-          </View>
-        ) : (
-          /* Tab 2: Rangkuman Bacaan */
-          <View style={styles.readingSection}>
-            <View style={styles.readingCard}>
-              <Text style={styles.readingText}>
-                {materi.rangkuman.trim()}
-              </Text>
-            </View>
-          </View>
-        )}
-      </ScrollView>
-
-      {/* Floating Bottom CTA for Quiz */}
-      <View style={styles.bottomBar}>
-        <View style={styles.quizInfo}>
-          <Text style={styles.quizInfoTitle}>Evaluasi Pemahaman</Text>
-          <Text style={styles.quizInfoSubtitle}>3 Soal Pilihan Ganda (Anti-Screenshot)</Text>
-        </View>
+        {/* Back Button Overlay */}
         <TouchableOpacity
-          activeOpacity={0.88}
-          onPress={() => router.push({ pathname: '/quiz/[id]', params: { id: quizId } })}
-          style={styles.quizButton}
+          style={[styles.backButton, { top: Math.max(insets.top, 16) }]}
+          activeOpacity={0.8}
+          onPress={() => router.back()}
         >
-          <Text style={styles.quizButtonText}>Mulai Kuis</Text>
-          <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={26} color="#FFFFFF" />
         </TouchableOpacity>
+
+        {/* Thin bottom blue border */}
+        <View style={styles.videoBorderBottom} />
       </View>
-    </SafeAreaView>
+
+      {/* Content Section */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: Math.max(insets.bottom, 24) + 20 },
+        ]}
+      >
+        {/* Title */}
+        <Text style={styles.materiTitle}>{title}</Text>
+
+        {/* Description */}
+        <Text style={styles.materiDesc}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </Text>
+
+        {/* Action 1: Latihan Soal */}
+        <TouchableOpacity
+          style={styles.actionRow}
+          activeOpacity={0.8}
+          onPress={() => router.push('/quiz/quiz-03')}
+        >
+          <View style={styles.actionIconBadge}>
+            <Ionicons name="document-text-outline" size={26} color="#2B7BF6" />
+          </View>
+          <View style={styles.actionInfo}>
+            <Text style={styles.actionTitle}>Latihan Soal</Text>
+            <Text style={styles.actionSubtitle}>
+              Ayo kerjakan latihan, untuk mengasah kemampuanmu
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Action 2: Lihat Rangkuman */}
+        <TouchableOpacity style={styles.actionRow} activeOpacity={0.8}>
+          <View style={styles.actionIconBadge}>
+            <Ionicons name="reader-outline" size={26} color="#2B7BF6" />
+          </View>
+          <View style={styles.actionInfo}>
+            <Text style={styles.actionTitle}>Lihat Rangkuman</Text>
+            <Text style={styles.actionSubtitle}>
+              Lihat rangkuman dari video yang kamu tonton
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Bottom Button: Materi Selanjutnya */}
+        <TouchableOpacity
+          style={styles.nextButton}
+          activeOpacity={0.88}
+          onPress={() => router.push('/quiz/quiz-03')}
+        >
+          <Text style={styles.nextButtonText}>Materi Selanjutnya</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
   },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 90,
-  },
-  header: {
-    marginBottom: 8,
-  },
-  jurusanBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#EEF2FF',
-    color: '#4F46E5',
-    fontSize: 11,
-    fontWeight: '700',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    marginBottom: 6,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#0F172A',
-    marginBottom: 4,
-  },
-  authorText: {
-    fontSize: 12,
-    color: '#64748B',
-  },
-  videoSection: {
-    marginTop: 8,
-  },
-  videoPlayerCard: {
-    height: 200,
+  videoWrapper: {
+    width: '100%',
+    height: 220,
     backgroundColor: '#0F172A',
-    borderRadius: 16,
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  videoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 16,
+    zIndex: 10,
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
   },
-  playIconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#4F46E5',
+  playIconOverlay: {
+    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
   },
-  videoPlayerNotice: {
-    color: '#E2E8F0',
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  videoDurationBadge: {
-    marginTop: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    color: '#FFFFFF',
-    fontSize: 11,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    fontWeight: '700',
-  },
-  videoNotesBox: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginTop: 14,
-  },
-  noteTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  noteTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  noteBullet: {
-    fontSize: 12,
-    color: '#475569',
-    lineHeight: 18,
-    marginBottom: 4,
-  },
-  readingSection: {
-    marginTop: 8,
-  },
-  readingCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  readingText: {
-    fontSize: 13,
-    color: '#334155',
-    lineHeight: 20,
-  },
-  bottomBar: {
+  videoBorderBottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    height: 3,
+    backgroundColor: '#2B7BF6',
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 18,
+  },
+  materiTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#2B7BF6',
+    marginBottom: 10,
+  },
+  materiDesc: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: '#64748B',
+    marginBottom: 20,
+    textAlign: 'justify',
+    fontWeight: '400',
+  },
+  actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    marginBottom: 16,
+    gap: 12,
   },
-  quizInfo: {
+  actionIconBadge: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionInfo: {
     flex: 1,
-    marginRight: 12,
   },
-  quizInfoTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#0F172A',
+  actionTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#2B7BF6',
   },
-  quizInfoSubtitle: {
+  actionSubtitle: {
     fontSize: 11,
     color: '#64748B',
-    marginTop: 1,
+    marginTop: 2,
+    fontWeight: '500',
   },
-  quizButton: {
-    backgroundColor: '#4F46E5',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    flexDirection: 'row',
+  nextButton: {
+    backgroundColor: '#2B7BF6',
+    borderRadius: 25,
+    height: 50,
     alignItems: 'center',
-    gap: 6,
+    justifyContent: 'center',
+    marginTop: 24,
+    shadowColor: '#2B7BF6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  quizButtonText: {
+  nextButtonText: {
     color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
   },
 });

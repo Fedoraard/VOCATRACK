@@ -2,238 +2,299 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
+  TextInput,
   TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-import { AuthInput } from '../../components/auth/AuthInput';
-import { SocialLoginButton } from '../../components/auth/SocialLoginButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { GoogleLogo } from '../../components/auth/GoogleLogo';
 import { useAuth } from '../../hooks/useAuth';
 
+const { height } = Dimensions.get('window');
+
 export default function LoginScreen() {
-  const [email, setEmail] = useState('siswa.vokasi@vocatrack.id');
-  const [password, setPassword] = useState('vokasi2026');
-  const { login, loginWithBiometrics, loading, errorMessage } = useAuth();
+  const insets = useSafeAreaInsets();
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loading, errorMessage } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
-    const success = await login(email, password);
+    const emailToUse = identifier.trim() || 'siswa.vokasi@vocatrack.id';
+    const passwordToUse = password || 'vokasi2026';
+    const success = await login(emailToUse, passwordToUse);
     if (success) {
       router.replace('/(tabs)');
     }
   };
 
-  const handleBiometricLogin = async () => {
-    const success = await loginWithBiometrics();
+  const handleGoogleLogin = async () => {
+    const success = await login('siswa.google@vocatrack.id', 'google_oauth_pass');
     if (success) {
       router.replace('/(tabs)');
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.container}>
+      <StatusBar style="light" />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
+        style={styles.keyboardContainer}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: Math.max(insets.bottom, 20) + 16 },
+          ]}
           keyboardShouldPersistTaps="handled"
+          bounces={false}
+          showsVerticalScrollIndicator={false}
         >
-          {/* Logo & Header */}
-          <View style={styles.header}>
-            <View style={styles.logoBadge}>
-              <Ionicons name="school" size={28} color="#4F46E5" />
-            </View>
-            <Text style={styles.appName}>VOCATRACK</Text>
-            <Text style={styles.appTagline}>
-              Platform Navigasi Karir & Pembelajaran Vokasi Presisi
-            </Text>
+          {/* Top Hero: Students on Clouds */}
+          <View style={styles.heroSection}>
+            <Image
+              source={require('../../assets/hero_students.png')}
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
           </View>
 
-          {/* Login Card */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Masuk ke Akun Anda</Text>
-            <Text style={styles.cardSubtitle}>
-              Lanjutkan perkembangan peta keahlian dan persiapan karir SMK/Politeknik.
+          {/* Bottom Card: White Form Area */}
+          <View style={styles.formCard}>
+            {/* Logo */}
+            <View style={styles.logoRow}>
+              <Image
+                source={require('../../assets/vocatrack_logo_blue.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
+            </View>
+
+            {/* Subtitle */}
+            <Text style={styles.subtitle}>
+              Ayo Mulai Belajar dan Temukan Arah Karirmu!
             </Text>
 
-            {errorMessage && (
-              <View style={styles.alertBox}>
+            {/* Error Message if any */}
+            {Boolean(errorMessage) && (
+              <View style={styles.errorBox}>
                 <Ionicons name="alert-circle" size={16} color="#DC2626" />
-                <Text style={styles.alertText}>{errorMessage}</Text>
+                <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             )}
 
-            {/* Modular Auth Inputs */}
-            <AuthInput
-              label="Alamat Email Siswa / NISN"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="nama@sekolah.sch.id"
-              iconName="mail-outline"
-              keyboardType="email-address"
-            />
+            {/* Username or Email Input */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                value={identifier}
+                onChangeText={setIdentifier}
+                placeholder="Username or Email"
+                placeholderTextColor="#94A3B8"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                style={styles.input}
+              />
+            </View>
 
-            <AuthInput
-              label="Kata Sandi"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Masukkan kata sandi akun"
-              iconName="lock-closed-outline"
-              isPassword
-            />
+            {/* Password Input */}
+            <View style={[styles.inputWrapper, styles.passwordWrapper]}>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+                placeholderTextColor="#94A3B8"
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                style={styles.inputWithIcon}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIconBtn}
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              >
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color="#94A3B8"
+                />
+              </TouchableOpacity>
+            </View>
 
-            {/* Submit Button */}
+            {/* Forgot Password */}
             <TouchableOpacity
+              onPress={() => {}}
+              style={styles.forgotBtn}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.forgotText}>Forgot password?</Text>
+            </TouchableOpacity>
+
+            {/* Log In Button */}
+            <TouchableOpacity
+              style={[styles.primaryButton, loading && styles.disabledButton]}
               activeOpacity={0.88}
               onPress={handleLogin}
               disabled={loading}
-              style={[styles.primaryButton, loading && styles.disabledButton]}
             >
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text style={styles.primaryButtonText}>Masuk ke VocaTrack</Text>
+                <Text style={styles.primaryButtonText}>Log In</Text>
               )}
             </TouchableOpacity>
 
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>atau gunakan</Text>
-              <View style={styles.dividerLine} />
+            {/* Divider 'atau' */}
+            <Text style={styles.dividerText}>atau</Text>
+
+            {/* Sign-In with Google */}
+            <TouchableOpacity
+              style={styles.googleButton}
+              activeOpacity={0.85}
+              onPress={handleGoogleLogin}
+              disabled={loading}
+            >
+              <GoogleLogo size={20} />
+              <Text style={styles.googleButtonText}>Sign-In with Google</Text>
+            </TouchableOpacity>
+
+            {/* Footer Navigation */}
+            <View style={styles.footerRow}>
+              <Text style={styles.footerPrompt}>Dont have an account? </Text>
+              <TouchableOpacity
+                onPress={() => router.push('/(auth)/register')}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.footerLink}>Sign-Up</Text>
+              </TouchableOpacity>
             </View>
-
-            {/* Modular Social & Biometric Buttons */}
-            <SocialLoginButton
-              provider="biometric"
-              title="Masuk dengan Sidik Jari / Biometrik"
-              onPress={handleBiometricLogin}
-              disabled={loading}
-            />
-
-            <SocialLoginButton
-              provider="google"
-              title="Masuk dengan Akun Belajar.id / Google"
-              onPress={handleLogin}
-              disabled={loading}
-            />
           </View>
-
-          {/* Quick Guest Access */}
-          <TouchableOpacity
-            style={styles.guestLink}
-            onPress={() => router.replace('/(tabs)')}
-          >
-            <Text style={styles.guestLinkText}>
-              Eksplorasi Langsung sebagai Tamu →
-            </Text>
-          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#EEF2FF',
-  },
   container: {
+    flex: 1,
+    backgroundColor: '#3792FD',
+  },
+  keyboardContainer: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 36,
-    justifyContent: 'center',
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  logoBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 20,
     backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 4,
-    marginBottom: 12,
   },
-  appName: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#1E1B4B',
-    letterSpacing: 1.5,
+  heroSection: {
+    width: '100%',
+    height: Math.min(height * 0.33, 270),
+    backgroundColor: '#3792FD',
+    overflow: 'hidden',
   },
-  appTagline: {
-    fontSize: 13,
-    color: '#64748B',
-    textAlign: 'center',
-    marginTop: 6,
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  formCard: {
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 24,
+    paddingTop: 12,
+    flex: 1,
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 22,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 5,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#0F172A',
+  logoRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 4,
   },
-  cardSubtitle: {
-    fontSize: 13,
-    color: '#64748B',
-    marginBottom: 18,
-    lineHeight: 18,
+  logoImage: {
+    width: 210,
+    height: 48,
   },
-  alertBox: {
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#64748B',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 20,
+  },
+  errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FEE2E2',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 14,
     gap: 8,
   },
-  alertText: {
+  errorText: {
     fontSize: 12,
     color: '#DC2626',
     flex: 1,
     fontWeight: '500',
   },
-  primaryButton: {
-    backgroundColor: '#4F46E5',
+  inputWrapper: {
+    height: 50,
+    borderWidth: 1.5,
+    borderColor: '#70A6FA',
     borderRadius: 14,
-    height: 52,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  passwordWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 12,
+    marginBottom: 4,
+  },
+  input: {
+    fontSize: 14,
+    color: '#0F172A',
+    fontWeight: '500',
+  },
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 14,
+    color: '#0F172A',
+    fontWeight: '500',
+  },
+  eyeIconBtn: {
+    padding: 6,
+  },
+  forgotBtn: {
+    alignSelf: 'flex-start',
+    marginBottom: 20,
+    marginTop: 4,
+  },
+  forgotText: {
+    color: '#2B7BF6',
+    fontSize: 13,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+  primaryButton: {
+    backgroundColor: '#2B7BF6',
+    borderRadius: 25,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 6,
-    shadowColor: '#4F46E5',
+    shadowColor: '#2B7BF6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.28,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -242,33 +303,46 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  dividerText: {
+    fontSize: 13,
+    color: '#94A3B8',
+    textAlign: 'center',
+    marginVertical: 12,
+    fontWeight: '500',
+  },
+  googleButton: {
+    backgroundColor: '#EBF5FF',
+    borderRadius: 25,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  googleButtonText: {
+    color: '#2B7BF6',
     fontSize: 15,
     fontWeight: '700',
   },
-  dividerRow: {
+  footerRow: {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 18,
+    marginTop: 22,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E2E8F0',
-  },
-  dividerText: {
-    fontSize: 12,
-    color: '#94A3B8',
-    paddingHorizontal: 10,
-    fontWeight: '600',
-  },
-  guestLink: {
-    alignItems: 'center',
-    marginTop: 20,
-    padding: 8,
-  },
-  guestLinkText: {
-    color: '#4F46E5',
+  footerPrompt: {
+    color: '#3B82F6',
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '500',
+  },
+  footerLink: {
+    color: '#F59E0B',
+    fontSize: 13,
+    fontWeight: '800',
+    textDecorationLine: 'underline',
   },
 });

@@ -11,16 +11,21 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <StatusBar style="dark" />
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="materi/list"
+            options={{
+              presentation: 'card',
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="materi/[id]"
             options={{
               presentation: 'card',
-              headerShown: true,
-              headerTitle: 'Materi Pembelajaran',
-              headerBackTitle: 'Kembali',
-              headerTintColor: '#4F46E5',
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -34,9 +39,7 @@ export default function RootLayout() {
             name="vocabot"
             options={{
               presentation: 'modal',
-              headerShown: true,
-              headerTitle: 'VocaBot AI Assistant',
-              headerTintColor: '#4F46E5',
+              headerShown: false,
             }}
           />
         </Stack>

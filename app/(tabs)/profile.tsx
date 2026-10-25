@@ -1,21 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
-import { useAppStore } from '../../store/useAppStore';
 
 export default function ProfileScreen() {
-  const { logout, loginWithBiometrics } = useAuth();
-  const user = useAppStore((state) => state.user);
-
-  const handleTestBiometrics = async () => {
-    const success = await loginWithBiometrics();
-    if (success) {
-      Alert.alert('Sukses', 'Sensor biometrik aktif dan terverifikasi!');
-    }
-  };
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
     Alert.alert(
@@ -28,7 +27,7 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             await logout();
-            router.replace('/(auth)/login');
+            router.replace('/(auth)/welcome');
           },
         },
       ]
@@ -36,221 +35,349 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatarCircle}>
-            <Text style={styles.avatarInitials}>AF</Text>
-          </View>
-          <Text style={styles.userName}>{user?.namaLengkap || 'Ahmad Faiz Al-Rasyid'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'siswa.vokasi@vocatrack.id'}</Text>
-          <View style={styles.schoolBadge}>
-            <Ionicons name="school" size={13} color="#4F46E5" />
-            <Text style={styles.schoolText}>{user?.asalSekolah || 'SMKN 1 Cimahi'}</Text>
-          </View>
-        </View>
+    <View style={styles.container}>
+      <StatusBar style="dark" />
 
-        {/* Milestone Stats */}
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>Level {user?.level || 3}</Text>
-            <Text style={styles.statLabel}>Peringkat Siswa</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{user?.totalXp || 850}</Text>
-            <Text style={styles.statLabel}>Total Poin XP</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>7</Text>
-            <Text style={styles.statLabel}>Modul Tuntas</Text>
-          </View>
-        </View>
+      {/* Decorative background shapes */}
+      <View style={styles.faintCircleTop} />
+      <View style={styles.faintCircleMid} />
 
-        {/* Security & Settings Section */}
-        <Text style={styles.sectionHeader}>Keamanan & Preferensi Native</Text>
-
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={handleTestBiometrics}
-          activeOpacity={0.8}
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <View style={styles.settingIconContainer}>
-            <Ionicons name="finger-print" size={20} color="#4F46E5" />
-          </View>
-          <View style={styles.settingTextContainer}>
-            <Text style={styles.settingTitle}>Uji Autentikasi Biometrik</Text>
-            <Text style={styles.settingSubtitle}>
-              Gunakan sensor sidik jari / FaceID perangkat Anda
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
-        </TouchableOpacity>
+          {/* Card 1: User Profile Header */}
+          <View style={styles.profileCard}>
+            <View style={styles.avatarWrapper}>
+              <View style={styles.avatarCircle}>
+                <Ionicons name="person" size={40} color="#2B7BF6" />
+              </View>
+              {/* Camera Icon Badge */}
+              <View style={styles.cameraBadge}>
+                <Ionicons name="camera" size={13} color="#FFFFFF" />
+              </View>
+            </View>
 
-        <View style={styles.settingItem}>
-          <View style={styles.settingIconContainer}>
-            <Ionicons name="shield-checkmark" size={20} color="#10B981" />
-          </View>
-          <View style={styles.settingTextContainer}>
-            <Text style={styles.settingTitle}>Perlindungan Layar (FLAG_SECURE)</Text>
-            <Text style={styles.settingSubtitle}>
-              Mencegah tangkapan layar ilegal saat evaluasi & kuis
-            </Text>
-          </View>
-          <Text style={styles.activeStatusText}>Aktif</Text>
-        </View>
+            <View style={styles.userInfoCol}>
+              <Text style={styles.userName}>Galuh</Text>
+              <Text style={styles.userEmail}>galuhganteng@gmail.com</Text>
 
-        {/* Logout Button */}
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-          activeOpacity={0.85}
-        >
-          <Ionicons name="log-out-outline" size={20} color="#EF4444" />
-          <Text style={styles.logoutText}>Keluar dari Akun</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+              <View style={styles.majorBadge}>
+                <Ionicons name="school" size={13} color="#2B7BF6" />
+                <Text style={styles.majorText}>Teknik Komputer Jaringan</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Card 2: Lengkapi Profilmu */}
+          <TouchableOpacity style={styles.completeProfileCard} activeOpacity={0.85}>
+            <View style={styles.completeProfileHeader}>
+              <Text style={styles.completeProfileTitle}>Lengkapi Profilmu</Text>
+              <View style={styles.completeProfileRight}>
+                <Text style={styles.completeProfileFraction}>3 dari 5 selesai</Text>
+                <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
+              </View>
+            </View>
+
+            {/* Progress Bar */}
+            <View style={styles.progressTrack}>
+              <View style={styles.progressFill} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Card 3: Menu List */}
+          <View style={styles.menuCard}>
+            {/* Menu 1: Informasi Pribadi */}
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <View style={styles.menuIconCircle}>
+                <Ionicons name="person" size={18} color="#2B7BF6" />
+              </View>
+              <View style={styles.menuTextCol}>
+                <Text style={styles.menuTitle}>Informasi Pribadi</Text>
+                <Text style={styles.menuSubtitle}>Kelola data diri dan akunmu</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <View style={styles.menuDivider} />
+
+            {/* Menu 2: Minat dan Preferensi */}
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <View style={styles.menuIconCircle}>
+                <Ionicons name="bookmark" size={18} color="#2B7BF6" />
+              </View>
+              <View style={styles.menuTextCol}>
+                <Text style={styles.menuTitle}>Minat dan Preferensi</Text>
+                <Text style={styles.menuSubtitle}>
+                  Atur minat jurusan dan bidang yang kamu suka
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <View style={styles.menuDivider} />
+
+            {/* Menu 3: Notifikasi */}
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <View style={styles.menuIconCircle}>
+                <Ionicons name="notifications" size={18} color="#2B7BF6" />
+              </View>
+              <View style={styles.menuTextCol}>
+                <Text style={styles.menuTitle}>Notifikasi</Text>
+                <Text style={styles.menuSubtitle}>
+                  Atur jenis notifikasi yang ingin kamu terima
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <View style={styles.menuDivider} />
+
+            {/* Menu 4: Keamanan Akun */}
+            <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+              <View style={styles.menuIconCircle}>
+                <Ionicons name="shield-checkmark" size={18} color="#2B7BF6" />
+              </View>
+              <View style={styles.menuTextCol}>
+                <Text style={styles.menuTitle}>Keamanan Akun</Text>
+                <Text style={styles.menuSubtitle}>
+                  Ubah kata sandi dan pengaturan keamanan
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Card 4: Logout Button */}
+          <TouchableOpacity
+            style={styles.logoutCard}
+            onPress={handleLogout}
+            activeOpacity={0.85}
+          >
+            <View style={styles.logoutIconCircle}>
+              <Ionicons name="log-out-outline" size={18} color="#EF4444" />
+            </View>
+            <Text style={styles.logoutText}>Keluar dari Akun</Text>
+            <Ionicons name="chevron-forward" size={16} color="#EF4444" />
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#DCEBFE',
+  },
+  faintCircleTop: {
+    position: 'absolute',
+    top: -40,
+    left: -40,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  faintCircleMid: {
+    position: 'absolute',
+    top: 260,
+    right: -50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
   },
   scrollContent: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 32,
   },
   profileCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 20,
+    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginBottom: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginRight: 16,
   },
   avatarCircle: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: '#4F46E5',
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#E0F0FE',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
   },
-  avatarInitials: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '800',
+  cameraBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#2B7BF6',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userInfoCol: {
+    flex: 1,
   },
   userName: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '900',
     color: '#0F172A',
   },
   userEmail: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#64748B',
     marginTop: 2,
+    fontWeight: '500',
   },
-  schoolBadge: {
+  majorBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EEF2FF',
+    backgroundColor: '#EFF6FF',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginTop: 8,
     gap: 6,
-    marginTop: 10,
   },
-  schoolText: {
-    fontSize: 12,
+  majorText: {
+    fontSize: 11,
     fontWeight: '700',
-    color: '#4F46E5',
+    color: '#2B7BF6',
   },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 24,
-  },
-  statBox: {
-    flex: 1,
+  completeProfileCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 14,
+    borderRadius: 16,
     padding: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    marginTop: 12,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
   },
-  statValue: {
-    fontSize: 16,
+  completeProfileHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  completeProfileTitle: {
+    fontSize: 12,
     fontWeight: '800',
     color: '#0F172A',
   },
-  statLabel: {
-    fontSize: 11,
-    color: '#64748B',
-    marginTop: 4,
-  },
-  sectionHeader: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#334155',
-    marginBottom: 10,
-    marginLeft: 4,
-  },
-  settingItem: {
+  completeProfileRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginBottom: 10,
+    gap: 4,
   },
-  settingIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: '#F1F5F9',
+  completeProfileFraction: {
+    fontSize: 11,
+    color: '#94A3B8',
+    fontWeight: '600',
+  },
+  progressTrack: {
+    height: 6,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    width: '60%',
+    height: '100%',
+    backgroundColor: '#2B7BF6',
+    borderRadius: 3,
+  },
+  menuCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    marginTop: 14,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  menuIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#EBF5FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
-  settingTextContainer: {
+  menuTextCol: {
     flex: 1,
   },
-  settingTitle: {
+  menuTitle: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#0F172A',
   },
-  settingSubtitle: {
+  menuSubtitle: {
     fontSize: 11,
     color: '#64748B',
     marginTop: 2,
+    fontWeight: '500',
   },
-  activeStatusText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#10B981',
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#F1F5F9',
+    marginLeft: 50,
   },
-  logoutButton: {
+  logoutCard: {
+    backgroundColor: '#FFF1F2',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginTop: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFE4E6',
+  },
+  logoutIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#FEE2E2',
-    borderRadius: 14,
-    paddingVertical: 14,
-    marginTop: 24,
-    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
   },
   logoutText: {
-    color: '#DC2626',
-    fontSize: 14,
-    fontWeight: '700',
+    color: '#EF4444',
+    fontSize: 13,
+    fontWeight: '800',
+    flex: 1,
   },
 });
