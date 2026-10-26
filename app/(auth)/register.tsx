@@ -17,6 +17,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GoogleLogo } from '../../components/auth/GoogleLogo';
+import { AuthBackgroundDecorations } from '../../components/auth/AuthBackgroundDecorations';
 import { useAuth } from '../../hooks/useAuth';
 
 const { height } = Dimensions.get('window');
@@ -92,6 +93,8 @@ export default function RegisterScreen() {
 
           {/* Bottom Card: White Form Area */}
           <View style={styles.formCard}>
+            <AuthBackgroundDecorations />
+
             {/* Logo */}
             <View style={styles.logoRow}>
               <Image
@@ -255,6 +258,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 10,
     flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
   },
   logoRow: {
     alignItems: 'center',
@@ -297,6 +302,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   passwordWrapper: {
     flexDirection: 'row',
