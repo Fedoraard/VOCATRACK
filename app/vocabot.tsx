@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: Platform.OS === 'android' ? 26 : 18,
     paddingBottom: 4,
   },
   backPill: {
@@ -265,12 +265,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2B7BF6',
     borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4.5,
+    paddingHorizontal: 11,
+    paddingVertical: 5,
     alignSelf: 'flex-start',
     gap: 4,
-    marginTop: 4,
-    marginBottom: 12,
+    marginTop: 18,
+    marginBottom: 14,
   },
   backPillText: {
     color: '#FFFFFF',

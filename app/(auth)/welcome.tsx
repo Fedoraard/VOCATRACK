@@ -25,7 +25,7 @@ export default function WelcomeScreen() {
       <View style={styles.decorativeCircle} />
 
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        {/* Top Brand Logo */}
+        {/* Top Brand Logo - Shifted downward */}
         <View style={styles.topBar}>
           <Image
             source={require('../../assets/vocatrack_logo_white.png')}
@@ -34,7 +34,7 @@ export default function WelcomeScreen() {
           />
         </View>
 
-        {/* Heading Section - Shifted downward to center */}
+        {/* Heading Section - Centered in upper area */}
         <View style={styles.headerSection}>
           <Text style={styles.titleLine}>Temukan Jalur</Text>
           <Text style={styles.titleLine}>Karier dari</Text>
@@ -61,22 +61,22 @@ export default function WelcomeScreen() {
           </Text>
         </View>
 
-        {/* Center 3D Characters Illustration with Highlighted Layered Clouds */}
+        {/* Center 3D Characters with Foreground Prominent Clouds */}
         <View style={styles.illustrationContainer}>
-          {/* Layered clouds positioned behind characters with transition highlights */}
-          <View style={styles.cloudBackdrop}>
-            <CloudHighlights height={145} />
-          </View>
-
           <Image
             source={require('../../assets/hero_students.png')}
             style={styles.heroImage}
             resizeMode="contain"
           />
+
+          {/* Prominent billowing clouds placed IN FRONT of avatar */}
+          <View style={styles.cloudForeground}>
+            <CloudHighlights height={115} fadeBottom={true} />
+          </View>
         </View>
 
-        {/* Bottom Action Buttons (Directly on Blue Background matching Image 1) */}
-        <View style={[styles.bottomSection, { paddingBottom: Math.max(insets.bottom, 20) + 8 }]}>
+        {/* Bottom Action Buttons (Directly on Blue Background) */}
+        <View style={[styles.bottomSection, { paddingBottom: Math.max(insets.bottom, 22) + 6 }]}>
           <TouchableOpacity
             style={styles.logInButton}
             activeOpacity={0.88}
@@ -101,7 +101,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2B7BF6',
+    backgroundColor: '#3792FD',
   },
   decorativeCircle: {
     position: 'absolute',
@@ -119,17 +119,18 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 8,
+    paddingTop: 42,
     paddingBottom: 4,
   },
   logo: {
-    width: 140,
-    height: 32,
+    width: 145,
+    height: 33,
   },
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 18,
+    marginTop: 24,
+    marginBottom: 8,
   },
   titleLine: {
     fontSize: 34,
@@ -178,49 +179,49 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
   subtitle: {
-    color: 'rgba(255, 255, 255, 0.92)',
+    color: 'rgba(255, 255, 255, 0.94)',
     fontSize: 13.5,
     lineHeight: 20,
     textAlign: 'center',
-    marginTop: 14,
+    marginTop: 12,
     paddingHorizontal: 20,
     fontWeight: '500',
   },
   illustrationContainer: {
     flex: 1,
     width: '100%',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    marginTop: 8,
-  },
-  cloudBackdrop: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
+    marginTop: -8,
   },
   heroImage: {
-    width: '100%',
-    height: Math.min(height * 0.36, 290),
+    width: width * 0.96,
+    height: Math.min(height * 0.35, 275),
     zIndex: 2,
-    marginBottom: -4,
+    marginBottom: 6,
+  },
+  cloudForeground: {
+    position: 'absolute',
+    bottom: -6,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   bottomSection: {
     paddingHorizontal: 24,
-    paddingTop: 12,
+    paddingTop: 6,
     backgroundColor: 'transparent',
   },
   logInButton: {
-    backgroundColor: '#1E6CEB',
+    backgroundColor: '#2563EB',
     borderRadius: 26,
     height: 52,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -237,11 +238,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#1E6CEB',
+    borderColor: '#2563EB',
     marginTop: 12,
   },
   signUpButtonText: {
-    color: '#1E6CEB',
+    color: '#2563EB',
     fontSize: 16,
     fontWeight: '800',
     letterSpacing: 0.3,

@@ -24,21 +24,21 @@ export const EducationAppBackground: React.FC<EducationAppBackgroundProps> = ({
   const isDashboard = variant === 'dashboard';
   const isChat = variant === 'chat';
 
-  // For dashboard, upper elements sit on a blue #2B7BF6 banner, so white/translucent is used.
+  // For dashboard, ALL elements are pure white (as requested: "elemnet nya putih" on blue).
   // For standard light & chat, vibrant blues and warm ambers pop against the soft pale background.
-  const topPrimary = isDashboard ? 'rgba(255, 255, 255, 0.46)' : '#2563EB';
-  const topSecondary = isDashboard ? 'rgba(255, 255, 255, 0.35)' : '#0284C7';
-  const topAccent = isDashboard ? '#FDE047' : '#F59E0B'; // bright yellow on blue or warm amber on light
-  const topSubtle = isDashboard ? 'rgba(255, 255, 255, 0.28)' : '#94A3B8';
+  const topPrimary = isDashboard ? '#FFFFFF' : '#2563EB';
+  const topSecondary = isDashboard ? 'rgba(255, 255, 255, 0.82)' : '#0284C7';
+  const topAccent = isDashboard ? '#FFFFFF' : '#F59E0B';
+  const topSubtle = isDashboard ? 'rgba(255, 255, 255, 0.65)' : '#94A3B8';
 
-  const midPrimary = '#2563EB';
-  const midSecondary = '#0284C7';
-  const midAccent = '#F59E0B';
-  const midIndigo = '#6366F1';
-  const midSubtle = '#94A3B8';
+  const midPrimary = isDashboard ? '#FFFFFF' : '#2563EB';
+  const midSecondary = isDashboard ? 'rgba(255, 255, 255, 0.82)' : '#0284C7';
+  const midAccent = isDashboard ? '#FFFFFF' : '#F59E0B';
+  const midIndigo = isDashboard ? 'rgba(255, 255, 255, 0.88)' : '#6366F1';
+  const midSubtle = isDashboard ? 'rgba(255, 255, 255, 0.65)' : '#94A3B8';
 
-  // Slightly higher opacity for chat wallpaper so it is clearly visible across empty chat areas
-  const baseOpacity = isChat ? 0.46 : 0.38;
+  // Base opacity: 0.38 for dashboard white doodles so they are clearly visible yet elegant
+  const baseOpacity = isDashboard ? 0.38 : (isChat ? 0.46 : 0.38);
 
   return (
     <View pointerEvents="none" style={[styles.container, style]}>
@@ -50,17 +50,17 @@ export const EducationAppBackground: React.FC<EducationAppBackgroundProps> = ({
         style={StyleSheet.absoluteFill}
       >
         <Defs>
-          {/* Soft ambient corner glows for background depth */}
+          {/* Soft ambient corner glows for background depth (disabled on solid blue dashboard) */}
           <RadialGradient id="eduGlowTop" cx="15%" cy="8%" r="45%" fx="15%" fy="8%">
-            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0.05 : 0.18} />
+            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.18} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
           <RadialGradient id="eduGlowMid" cx="88%" cy="45%" r="45%" fx="88%" fy="45%">
-            <Stop offset="0%" stopColor="#818CF8" stopOpacity={0.14} />
+            <Stop offset="0%" stopColor="#818CF8" stopOpacity={isDashboard ? 0 : 0.14} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
           <RadialGradient id="eduGlowBottom" cx="12%" cy="85%" r="40%" fx="12%" fy="85%">
-            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={0.16} />
+            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.16} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
         </Defs>

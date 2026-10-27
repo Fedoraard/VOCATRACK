@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GoogleLogo } from '../../components/auth/GoogleLogo';
 import { AuthBackgroundDecorations } from '../../components/auth/AuthBackgroundDecorations';
+import { CloudHighlights } from '../../components/common/CloudHighlights';
 import { useAuth } from '../../hooks/useAuth';
 
 const { height } = Dimensions.get('window');
@@ -87,8 +88,12 @@ export default function RegisterScreen() {
             <Image
               source={require('../../assets/hero_students.png')}
               style={styles.heroImage}
-              resizeMode="cover"
+              resizeMode="contain"
             />
+            {/* Layered billowing clouds under characters */}
+            <View style={styles.cloudOverlay}>
+              <CloudHighlights height={65} fadeBottom={false} />
+            </View>
           </View>
 
           {/* Bottom Card: White Form Area */}
@@ -245,13 +250,23 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    height: Math.min(height * 0.28, 230),
+    height: Math.min(height * 0.32, 260),
     backgroundColor: '#3792FD',
+    position: 'relative',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
     overflow: 'hidden',
   },
   heroImage: {
     width: '100%',
     height: '100%',
+  },
+  cloudOverlay: {
+    position: 'absolute',
+    bottom: -2,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   formCard: {
     backgroundColor: '#FFFFFF',

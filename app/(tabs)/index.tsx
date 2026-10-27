@@ -18,8 +18,7 @@ export default function DashboardScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Decorative gradient / sky background */}
-      <View style={styles.topSkyGradient} />
+      {/* Full Educational Doodles Background (pure white doodles on blue) */}
       <EducationAppBackground variant="dashboard" />
 
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -112,14 +111,6 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D6E8FE',
-  },
-  topSkyGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 280,
     backgroundColor: '#2B7BF6',
   },
   safeArea: {

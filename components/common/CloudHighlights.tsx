@@ -12,11 +12,13 @@ import Svg, {
 interface CloudHighlightsProps {
   style?: object;
   height?: number;
+  fadeBottom?: boolean;
 }
 
 export const CloudHighlights: React.FC<CloudHighlightsProps> = ({
   style,
   height = 140,
+  fadeBottom = false,
 }) => {
   return (
     <View pointerEvents="none" style={[styles.container, { height }, style]}>
@@ -32,21 +34,21 @@ export const CloudHighlights: React.FC<CloudHighlightsProps> = ({
           <LinearGradient id="cloudGradBack" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.65} />
             <Stop offset="40%" stopColor="#E0F2FE" stopOpacity={0.50} />
-            <Stop offset="100%" stopColor="#BAE6FD" stopOpacity={0.20} />
+            <Stop offset="100%" stopColor="#BAE6FD" stopOpacity={fadeBottom ? 0 : 0.20} />
           </LinearGradient>
 
           {/* Mid cloud gradient with bright top highlight */}
           <LinearGradient id="cloudGradMid" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.95} />
             <Stop offset="30%" stopColor="#F0F9FF" stopOpacity={0.85} />
-            <Stop offset="100%" stopColor="#E0F2FE" stopOpacity={0.60} />
+            <Stop offset="100%" stopColor="#E0F2FE" stopOpacity={fadeBottom ? 0 : 0.60} />
           </LinearGradient>
 
-          {/* Front cloud pure white with subtle base shadow */}
+          {/* Front cloud pure white with subtle base shadow or fade */}
           <LinearGradient id="cloudGradFront" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={1} />
-            <Stop offset="80%" stopColor="#FFFFFF" stopOpacity={0.98} />
-            <Stop offset="100%" stopColor="#EBF5FF" stopOpacity={0.92} />
+            <Stop offset={fadeBottom ? "65%" : "80%"} stopColor="#FFFFFF" stopOpacity={0.98} />
+            <Stop offset="100%" stopColor={fadeBottom ? "#FFFFFF" : "#EBF5FF"} stopOpacity={fadeBottom ? 0 : 0.95} />
           </LinearGradient>
         </Defs>
 
