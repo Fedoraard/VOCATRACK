@@ -51,11 +51,19 @@ export default function DashboardScreen() {
                 </View>
               </View>
 
-              <Image
-                source={require('../../assets/galuh_avatar.png')}
-                style={styles.avatarPhoto}
-                resizeMode="cover"
-              />
+              {user?.fotoProfil ? (
+                <Image
+                  source={{ uri: user.fotoProfil }}
+                  style={styles.avatarPhoto}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={[styles.avatarPhoto, styles.avatarPlaceholder]}>
+                  <Text style={styles.avatarInitials}>
+                    {displayName.slice(0, 2).toUpperCase()}
+                  </Text>
+                </View>
+              )}
             </View>
 
             {/* Blue Progress Bar Container */}
@@ -186,6 +194,16 @@ const styles = StyleSheet.create({
     width: 78,
     height: 78,
     borderRadius: 14,
+  },
+  avatarPlaceholder: {
+    backgroundColor: '#2B7BF6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarInitials: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '800',
   },
   progressContainer: {
     backgroundColor: '#2B7BF6',

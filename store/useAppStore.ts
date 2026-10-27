@@ -12,6 +12,7 @@ interface AppState {
   
   // Actions
   setUser: (user: UserProfile | null) => void;
+  updateProfile: (profileData: Partial<UserProfile>) => void;
   setSelectedJurusanId: (id: string) => void;
   updateNodeStatus: (nodeId: string, status: SkillStatus) => void;
   addXp: (amount: number) => void;
@@ -38,6 +39,10 @@ export const useAppStore = create<AppState>((set) => ({
   activeQuizId: null,
 
   setUser: (user) => set({ user, isAuthenticated: Boolean(user) }),
+  updateProfile: (profileData) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...profileData } : null,
+    })),
   setSelectedJurusanId: (id) => set({ selectedJurusanId: id }),
   updateNodeStatus: (nodeId, status) =>
     set((state) => ({

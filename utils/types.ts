@@ -70,6 +70,7 @@ export interface UserProfile {
   namaLengkap: string;
   asalSekolah: string;
   jurusanDiminati?: string;
+  fotoProfil?: string;
   totalXp: number;
   level: number;
 }

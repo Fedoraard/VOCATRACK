@@ -10,6 +10,7 @@ export function useAuth() {
   const user = useAppStore((state) => state.user);
   const isAuthenticated = useAppStore((state) => state.isAuthenticated);
   const setUser = useAppStore((state) => state.setUser);
+  const updateStoreProfile = useAppStore((state) => state.updateProfile);
   const logoutStore = useAppStore((state) => state.logout);
 
   // Login via Email/Password (Supabase with Mock Fallback)
@@ -165,6 +166,34 @@ export function useAuth() {
     logoutStore();
   }, [logoutStore]);
 
+  const updateProfile = useCallback(
+    async (updates: { namaLengkap?: string; asalSekolah?: string; jurusanDiminati?: string; fotoProfil?: string }) => {
+      setLoading(true);
+      setErrorMessage(null);
+      try {
+        if (isSupabaseConfigured) {
+          const { error } = await supabase.auth.updateUser({
+            data: {
+              ...(updates.namaLengkap && { full_name: updates.namaLengkap }),
+              ...(updates.asalSekolah && { school: updates.asalSekolah }),
+              ...(updates.jurusanDiminati && { major: updates.jurusanDiminati }),
+              ...(updates.fotoProfil && { avatar_url: updates.fotoProfil }),
+            },
+          });
+          if (error) throw error;
+        }
+        updateStoreProfile(updates);
+        return true;
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Gagal memperbarui profil.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [updateStoreProfile]
+  );
+
   return {
     user,
     isAuthenticated,
@@ -172,6 +201,7 @@ export function useAuth() {
     errorMessage,
     login,
     register,
+    updateProfile,
     loginWithBiometrics,
     logout,
   };
