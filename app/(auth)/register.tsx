@@ -33,34 +33,46 @@ export default function RegisterScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { login, loading } = useAuth();
+  const { register, loading, errorMessage } = useAuth();
 
   const handleRegister = async () => {
     setLocalError(null);
     if (!fullName.trim() && !email.trim()) {
-      // Default dummy for instant demo
-      const success = await login('siswa.baru@vocatrack.id', 'vokasi2026');
-      if (success) {
-        router.replace('/(tabs)');
-      }
+      setLocalError('Mohon isi nama lengkap dan email.');
       return;
     }
 
-    if (password && confirmPassword && password !== confirmPassword) {
+    if (!email.trim()) {
+      setLocalError('Mohon masukkan alamat email.');
+      return;
+    }
+
+    if (!password) {
+      setLocalError('Mohon masukkan kata sandi.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setLocalError('Kata sandi minimal 6 karakter.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setLocalError('Konfirmasi kata sandi tidak cocok.');
       return;
     }
 
-    const emailToUse = email.trim() || 'siswa.baru@vocatrack.id';
-    const passwordToUse = password || 'vokasi2026';
-    const success = await login(emailToUse, passwordToUse);
+    const emailToUse = email.trim();
+    const passwordToUse = password;
+    const nameToUse = fullName.trim();
+    const success = await register(emailToUse, passwordToUse, nameToUse);
     if (success) {
       router.replace('/(tabs)');
     }
   };
 
   const handleGoogleRegister = async () => {
-    const success = await login('siswa.google@vocatrack.id', 'google_oauth_pass');
+    const success = await register('siswa.google@vocatrack.id', 'google_oauth_pass', 'Siswa Google');
     if (success) {
       router.replace('/(tabs)');
     }
@@ -115,10 +127,10 @@ export default function RegisterScreen() {
             </Text>
 
             {/* Error message */}
-            {Boolean(localError) && (
+            {Boolean(localError || errorMessage) && (
               <View style={styles.errorBox}>
                 <Ionicons name="alert-circle" size={16} color="#DC2626" />
-                <Text style={styles.errorText}>{localError}</Text>
+                <Text style={styles.errorText}>{localError || errorMessage}</Text>
               </View>
             )}
 

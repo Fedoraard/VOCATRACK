@@ -64,6 +64,64 @@ export function useAuth() {
     [setUser]
   );
 
+  // Register via Email/Password (Supabase with Mock Fallback)
+  const register = useCallback(
+    async (email: string, pass: string, fullName?: string, school?: string) => {
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (isSupabaseConfigured) {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password: pass,
+            options: {
+              data: {
+                full_name: fullName || 'Siswa Vokasi',
+                school: school || 'SMK Binaan VocaTrack',
+              },
+            },
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.user) {
+            setUser({
+              id: data.user.id,
+              email: data.user.email || email,
+              namaLengkap: data.user.user_metadata?.full_name || fullName || 'Siswa Vokasi',
+              asalSekolah: data.user.user_metadata?.school || school || 'SMK Binaan VocaTrack',
+              totalXp: 850,
+              level: 3,
+            });
+            return true;
+          }
+        } else {
+          // Mock register simulator
+          await new Promise((res) => setTimeout(res, 600));
+          setUser({
+            id: 'user-001',
+            email,
+            namaLengkap: fullName || 'Ahmad Faiz Al-Rasyid',
+            asalSekolah: school || 'SMKN 1 Cimahi',
+            jurusanDiminati: 'Rekayasa Perangkat Lunak',
+            totalXp: 850,
+            level: 3,
+          });
+          return true;
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Gagal mendaftar. Periksa kembali data Anda.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setUser]
+  );
+
   // Login via Native Biometrics (Fingerprint / FaceID)
   const loginWithBiometrics = useCallback(async () => {
     try {
@@ -113,6 +171,7 @@ export function useAuth() {
     loading,
     errorMessage,
     login,
+    register,
     loginWithBiometrics,
     logout,
   };
