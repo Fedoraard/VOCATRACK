@@ -11,6 +11,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ExerciseGraphCard } from '../../components/dashboard/ExerciseGraphCard';
+import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 export default function DashboardScreen() {
   return (
@@ -19,6 +20,7 @@ export default function DashboardScreen() {
 
       {/* Decorative gradient / sky background */}
       <View style={styles.topSkyGradient} />
+      <EducationAppBackground variant="dashboard" />
 
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
         <ScrollView

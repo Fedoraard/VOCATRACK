@@ -15,6 +15,7 @@ import Animated, {
 import { SkillTreeNode } from '../../components/skilltree/SkillTreeNode';
 import { useAppStore } from '../../store/useAppStore';
 import { NodeBab } from '../../utils/types';
+import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 export default function SkillTreeScreen() {
   const nodes = useAppStore((state) => state.nodes);
@@ -84,6 +85,8 @@ export default function SkillTreeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <EducationAppBackground />
+
       {/* Top Header */}
       <View style={styles.header}>
         <View>

@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAppStore } from '../../store/useAppStore';
 import { CareerTargetModal } from '../../components/jurusan/CareerTargetModal';
+import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 interface JurusanItem {
   id: string;
@@ -81,6 +82,7 @@ export default function JurusanScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+      <EducationAppBackground />
 
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
         <ScrollView

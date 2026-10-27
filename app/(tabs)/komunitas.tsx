@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 interface CommunityMessage {
   id: string;
@@ -71,6 +72,7 @@ export default function KomunitasScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
+      <EducationAppBackground />
 
       {/* Decorative background shape */}
       <View style={styles.faintCircleTop} />

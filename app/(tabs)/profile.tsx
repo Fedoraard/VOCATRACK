@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
+import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 export default function ProfileScreen() {
   const { logout } = useAuth();
@@ -37,6 +38,7 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+      <EducationAppBackground />
 
       {/* Decorative background shapes */}
       <View style={styles.faintCircleTop} />

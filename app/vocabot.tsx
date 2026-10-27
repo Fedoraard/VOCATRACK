@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { EducationAppBackground } from '../components/common/EducationAppBackground';
 
 interface ChatMessage {
   id: string;
@@ -73,6 +74,7 @@ export default function VocaBotScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+      <EducationAppBackground />
 
       {/* Faint background decorative shapes */}
       <View style={styles.faintCircleTop} />
