@@ -19,9 +19,19 @@ interface AppState {
   setActiveQuizId: (quizId: string | null) => void;
 }
 
+const DEFAULT_USER: UserProfile = {
+  id: 'user-001',
+  email: 'dipagntg12@gmail.com',
+  namaLengkap: 'dipdut',
+  asalSekolah: 'SMKN 1 Cimahi',
+  jurusanDiminati: 'Teknik Komputer Jaringan',
+  totalXp: 850,
+  level: 3,
+};
+
 export const useAppStore = create<AppState>((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: DEFAULT_USER,
+  isAuthenticated: true,
   selectedJurusanId: 'jur-01',
   jurusanList: MOCK_JURUSAN,
   nodes: MOCK_SKILL_TREE_NODES,

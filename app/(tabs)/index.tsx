@@ -12,8 +12,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ExerciseGraphCard } from '../../components/dashboard/ExerciseGraphCard';
 import { EducationAppBackground } from '../../components/common/EducationAppBackground';
+import { useAppStore } from '../../store/useAppStore';
 
 export default function DashboardScreen() {
+  const user = useAppStore((state) => state.user);
+  const displayName = user?.namaLengkap || 'dipdut';
+  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Teknik Komputer Jaringan';
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -31,10 +36,10 @@ export default function DashboardScreen() {
             <View style={styles.welcomeHeaderRow}>
               <View style={styles.welcomeTextCol}>
                 <Text style={styles.greetingTitle}>
-                  Halo <Text style={styles.userNameHighlight}>Galuh!</Text>
+                  Halo <Text style={styles.userNameHighlight}>{displayName}!</Text>
                 </Text>
                 <Text style={styles.userMajor}>
-                  Teknik Instalasi Tenaga Listrik
+                  {displayMajor}
                 </Text>
 
                 <Text style={styles.congratsText}>

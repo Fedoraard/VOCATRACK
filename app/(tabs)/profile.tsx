@@ -15,7 +15,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 
 export default function ProfileScreen() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const displayName = user?.namaLengkap || 'dipdut';
+  const displayEmail = user?.email || 'dipagntg12@gmail.com';
+  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Teknik Komputer Jaringan';
 
   const handleLogout = async () => {
     Alert.alert(
@@ -62,12 +65,12 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.userInfoCol}>
-              <Text style={styles.userName}>Galuh</Text>
-              <Text style={styles.userEmail}>galuhganteng@gmail.com</Text>
+              <Text style={styles.userName}>{displayName}</Text>
+              <Text style={styles.userEmail}>{displayEmail}</Text>
 
               <View style={styles.majorBadge}>
                 <Ionicons name="school" size={13} color="#2B7BF6" />
-                <Text style={styles.majorText}>Teknik Komputer Jaringan</Text>
+                <Text style={styles.majorText}>{displayMajor}</Text>
               </View>
             </View>
           </View>
