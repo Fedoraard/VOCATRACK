@@ -23,11 +23,11 @@ interface AppState {
 const DEFAULT_USER: UserProfile = {
   id: 'user-001',
   email: 'dipagntg12@gmail.com',
-  namaLengkap: 'dipdut',
-  asalSekolah: 'SMKN 1 Cimahi',
+  namaLengkap: 'DIVA WAHYU',
+  asalSekolah: 'SMK Binaan VocaTrack',
   jurusanDiminati: 'Teknik Komputer Jaringan',
-  totalXp: 850,
-  level: 3,
+  totalXp: 0,
+  level: 1,
 };
 
 export const useAppStore = create<AppState>((set) => ({

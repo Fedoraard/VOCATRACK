@@ -36,8 +36,8 @@ export function useAuth() {
               email: data.user.email || email,
               namaLengkap: data.user.user_metadata?.full_name || 'Siswa Vokasi',
               asalSekolah: data.user.user_metadata?.school || 'SMK Binaan VocaTrack',
-              totalXp: 850,
-              level: 3,
+              totalXp: 0,
+              level: 1,
             });
             return true;
           }
@@ -94,8 +94,8 @@ export function useAuth() {
               email: data.user.email || email,
               namaLengkap: data.user.user_metadata?.full_name || fullName || 'Siswa Vokasi',
               asalSekolah: data.user.user_metadata?.school || school || 'SMK Binaan VocaTrack',
-              totalXp: 850,
-              level: 3,
+              totalXp: 0,
+              level: 1,
             });
             return true;
           }

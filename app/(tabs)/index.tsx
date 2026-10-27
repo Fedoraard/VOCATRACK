@@ -10,13 +10,22 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { ExerciseGraphCard } from '../../components/dashboard/ExerciseGraphCard';
 import { EducationAppBackground } from '../../components/common/EducationAppBackground';
 import { useAppStore } from '../../store/useAppStore';
 
 export default function DashboardScreen() {
   const user = useAppStore((state) => state.user);
-  const displayName = user?.namaLengkap || 'dipdut';
+  const nodes = useAppStore((state) => state.nodes);
+
+  const completedNodes = nodes.filter((n) => n.status === 'completed');
+  const completedCount = completedNodes.length;
+  const totalNodes = nodes.length || 1;
+  const progressPercent = Math.round((completedCount / totalNodes) * 100);
+  const hasStartedLearning = completedCount > 0;
+
+  const displayName = user?.namaLengkap || 'DIVA WAHYU';
   const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Teknik Komputer Jaringan';
 
   return (
@@ -43,10 +52,12 @@ export default function DashboardScreen() {
                 </Text>
 
                 <Text style={styles.congratsText}>
-                  Selamat! Kamu Sudah Menyelesaikan
+                  {hasStartedLearning
+                    ? 'Selamat! Kamu Sudah Menyelesaikan'
+                    : 'Ayo Mulai Petualangan Belajarmu!'}
                 </Text>
                 <View style={styles.materiCountRow}>
-                  <Text style={styles.materiNumber}>25</Text>
+                  <Text style={styles.materiNumber}>{completedCount}</Text>
                   <Text style={styles.materiLabel}>Materi</Text>
                 </View>
               </View>
@@ -70,50 +81,74 @@ export default function DashboardScreen() {
             <View style={styles.progressContainer}>
               <View style={styles.progressTextRow}>
                 <Text style={styles.progressLabel}>Progress Pembelajaran:</Text>
-                <Text style={styles.progressPercentage}>12%</Text>
+                <Text style={styles.progressPercentage}>{progressPercent}%</Text>
               </View>
               <View style={styles.progressBarTrack}>
-                <View style={styles.progressBarFill} />
+                <View style={[styles.progressBarFill, { width: `${progressPercent}%` }]} />
               </View>
             </View>
 
-            {/* Action Button: Lanjut Belajar Yuk! */}
+            {/* Action Button */}
             <TouchableOpacity
               style={styles.continueButton}
               activeOpacity={0.88}
               onPress={() => router.push('/(tabs)/jurusan')}
             >
-              <Text style={styles.continueButtonText}>Lanjut Belajar Yuk!</Text>
+              <Text style={styles.continueButtonText}>
+                {hasStartedLearning ? 'Lanjut Belajar Yuk!' : 'Mulai Belajar Yuk!'}
+              </Text>
             </TouchableOpacity>
           </View>
 
           {/* Card 2: Smooth Curved Line Chart */}
-          <ExerciseGraphCard />
+          <ExerciseGraphCard hasData={hasStartedLearning} />
 
           {/* Card 3: Rekomendasi Materi */}
           <View style={styles.recommendationCard}>
             <Text style={styles.recTitle}>Rekomendasi Materi</Text>
-            <Text style={styles.recSubtitle}>
-              3 Saran materi yang bisa kamu perbaiki.
-            </Text>
-
-            <TouchableOpacity
-              style={styles.materialItem}
-              activeOpacity={0.8}
-              onPress={() => router.push('/materi/fisika-dasar')}
-            >
-              <Image
-                source={require('../../assets/fisika_icon.png')}
-                style={styles.materialIcon}
-                resizeMode="cover"
-              />
-              <View style={styles.materialInfo}>
-                <Text style={styles.materialTitle}>Fisika</Text>
-                <Text style={styles.materialDesc}>
-                  Ya Itulah Intinya Ya Itulah Intinya
+            {hasStartedLearning ? (
+              <>
+                <Text style={styles.recSubtitle}>
+                  3 Saran materi yang bisa kamu perbaiki.
                 </Text>
+
+                <TouchableOpacity
+                  style={styles.materialItem}
+                  activeOpacity={0.8}
+                  onPress={() => router.push('/materi/fisika-dasar')}
+                >
+                  <Image
+                    source={require('../../assets/fisika_icon.png')}
+                    style={styles.materialIcon}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.materialInfo}>
+                    <Text style={styles.materialTitle}>Fisika</Text>
+                    <Text style={styles.materialDesc}>
+                      Pahami konsep dasar kelistrikan & energi
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <View style={styles.emptyRecContainer}>
+                <View style={styles.emptyRecIconCircle}>
+                  <Ionicons name="sparkles-outline" size={24} color="#2B7BF6" />
+                </View>
+                <Text style={styles.emptyRecTitle}>Belum Ada Rekomendasi</Text>
+                <Text style={styles.emptyRecSubtitle}>
+                  Rekomendasi materi yang dipersonalisasi akan otomatis muncul setelah kamu mulai menyelesaikan materi pertama!
+                </Text>
+                <TouchableOpacity
+                  style={styles.emptyRecButton}
+                  activeOpacity={0.85}
+                  onPress={() => router.push('/(tabs)/jurusan')}
+                >
+                  <Ionicons name="compass-outline" size={15} color="#2B7BF6" />
+                  <Text style={styles.emptyRecButtonText}>Pilih Materi di Jurusan</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -304,5 +339,48 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginTop: 2,
     fontWeight: '500',
+  },
+  emptyRecContainer: {
+    alignItems: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+  },
+  emptyRecIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#EFF6FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  emptyRecTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#1E293B',
+    marginBottom: 4,
+  },
+  emptyRecSubtitle: {
+    fontSize: 11,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 16,
+    marginBottom: 12,
+  },
+  emptyRecButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+  },
+  emptyRecButtonText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#2B7BF6',
   },
 });

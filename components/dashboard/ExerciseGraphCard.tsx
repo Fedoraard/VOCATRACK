@@ -14,7 +14,26 @@ const { width } = Dimensions.get('window');
 const CHART_WIDTH = width - 64; // accounting for card & page paddings
 const CHART_HEIGHT = 120;
 
-export const ExerciseGraphCard: React.FC = () => {
+export const ExerciseGraphCard: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
+  if (!hasData) {
+    return (
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>Grafik Latihan Soal Kamu</Text>
+        </View>
+        <View style={styles.emptyContainer}>
+          <View style={styles.emptyIconCircle}>
+            <Ionicons name="stats-chart-outline" size={28} color="#94A3B8" />
+          </View>
+          <Text style={styles.emptyTitle}>Belum Ada Riwayat Latihan</Text>
+          <Text style={styles.emptySubtitle}>
+            Selesaikan materi dan kuis pertamamu untuk melihat grafik perkembangan kompetensi di sini!
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   // Chart dimensions & point coordinates (normalized to CHART_WIDTH x CHART_HEIGHT)
   // X coordinates spaced across 5 points
   const p1 = { x: 20, y: 95 };
@@ -198,5 +217,31 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#94A3B8',
     fontWeight: '600',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+  },
+  emptyIconCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  emptyTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#334155',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 12,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 18,
   },
 });

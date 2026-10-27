@@ -18,10 +18,12 @@ export default function RootLayout() {
         setUser({
           id: session.user.id,
           email: session.user.email || 'dipagntg12@gmail.com',
-          namaLengkap: session.user.user_metadata?.full_name || 'dipdut',
-          asalSekolah: session.user.user_metadata?.school || 'SMKN 1 Cimahi',
-          totalXp: 850,
-          level: 3,
+          namaLengkap: session.user.user_metadata?.full_name || 'DIVA WAHYU',
+          asalSekolah: session.user.user_metadata?.school || 'SMK Binaan VocaTrack',
+          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Komputer Jaringan',
+          fotoProfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.foto_profil,
+          totalXp: 0,
+          level: 1,
         });
       }
     });
@@ -33,10 +35,12 @@ export default function RootLayout() {
         setUser({
           id: session.user.id,
           email: session.user.email || 'dipagntg12@gmail.com',
-          namaLengkap: session.user.user_metadata?.full_name || 'dipdut',
-          asalSekolah: session.user.user_metadata?.school || 'SMKN 1 Cimahi',
-          totalXp: 850,
-          level: 3,
+          namaLengkap: session.user.user_metadata?.full_name || 'DIVA WAHYU',
+          asalSekolah: session.user.user_metadata?.school || 'SMK Binaan VocaTrack',
+          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Komputer Jaringan',
+          fotoProfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.foto_profil,
+          totalXp: 0,
+          level: 1,
         });
       }
     });
