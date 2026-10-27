@@ -72,7 +72,7 @@ export default function KomunitasScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <EducationAppBackground />
+      <EducationAppBackground variant="chat" />
 
       {/* Decorative background shape */}
       <View style={styles.faintCircleTop} />

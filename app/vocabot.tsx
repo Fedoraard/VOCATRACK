@@ -74,7 +74,7 @@ export default function VocaBotScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <EducationAppBackground />
+      <EducationAppBackground variant="chat" />
 
       {/* Faint background decorative shapes */}
       <View style={styles.faintCircleTop} />
@@ -89,7 +89,7 @@ export default function VocaBotScreen() {
             activeOpacity={0.8}
             onPress={() => router.back()}
           >
-            <Ionicons name="arrow-back" size={14} color="#FFFFFF" />
+            <Ionicons name="arrow-back" size={12} color="#FFFFFF" />
             <Text style={styles.backPillText}>Kembali</Text>
           </TouchableOpacity>
 
@@ -257,23 +257,24 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingTop: 16,
     paddingBottom: 4,
   },
   backPill: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#2B7BF6',
-    borderRadius: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 4.5,
     alignSelf: 'flex-start',
     gap: 4,
-    marginBottom: 10,
+    marginTop: 4,
+    marginBottom: 12,
   },
   backPillText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
   },
   titleRow: {

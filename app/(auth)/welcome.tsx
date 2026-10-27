@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CloudHighlights } from '../../components/common/CloudHighlights';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,7 +34,7 @@ export default function WelcomeScreen() {
           />
         </View>
 
-        {/* Heading Section */}
+        {/* Heading Section - Shifted downward to center */}
         <View style={styles.headerSection}>
           <Text style={styles.titleLine}>Temukan Jalur</Text>
           <Text style={styles.titleLine}>Karier dari</Text>
@@ -60,20 +61,25 @@ export default function WelcomeScreen() {
           </Text>
         </View>
 
-        {/* Center 3D Characters Illustration */}
+        {/* Center 3D Characters Illustration with Highlighted Layered Clouds */}
         <View style={styles.illustrationContainer}>
+          {/* Layered clouds positioned behind characters with transition highlights */}
+          <View style={styles.cloudBackdrop}>
+            <CloudHighlights height={145} />
+          </View>
+
           <Image
             source={require('../../assets/hero_students.png')}
             style={styles.heroImage}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </View>
 
-        {/* Bottom Action Buttons */}
-        <View style={[styles.bottomCard, { paddingBottom: Math.max(insets.bottom, 24) }]}>
+        {/* Bottom Action Buttons (Directly on Blue Background matching Image 1) */}
+        <View style={[styles.bottomSection, { paddingBottom: Math.max(insets.bottom, 20) + 8 }]}>
           <TouchableOpacity
             style={styles.logInButton}
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             onPress={() => router.push('/(auth)/login')}
           >
             <Text style={styles.logInButtonText}>Log In</Text>
@@ -81,7 +87,7 @@ export default function WelcomeScreen() {
 
           <TouchableOpacity
             style={styles.signUpButton}
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             onPress={() => router.push('/(auth)/register')}
           >
             <Text style={styles.signUpButtonText}>Sign Up</Text>
@@ -95,7 +101,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3792FD',
+    backgroundColor: '#2B7BF6',
   },
   decorativeCircle: {
     position: 'absolute',
@@ -123,14 +129,14 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 6,
+    marginTop: 18,
   },
   titleLine: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: '900',
     color: '#FFFFFF',
     letterSpacing: -0.5,
-    lineHeight: 38,
+    lineHeight: 40,
     textAlign: 'center',
   },
   jurusanRow: {
@@ -166,18 +172,18 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '-15deg' }],
   },
   jurusanText: {
-    fontSize: 34,
+    fontSize: 36,
     fontWeight: '900',
     color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   subtitle: {
     color: 'rgba(255, 255, 255, 0.92)',
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 13.5,
+    lineHeight: 20,
     textAlign: 'center',
-    marginTop: 12,
-    paddingHorizontal: 16,
+    marginTop: 14,
+    paddingHorizontal: 20,
     fontWeight: '500',
   },
   illustrationContainer: {
@@ -185,26 +191,36 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    position: 'relative',
+    marginTop: 8,
+  },
+  cloudBackdrop: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   heroImage: {
     width: '100%',
-    height: height * 0.32,
-    marginBottom: -1,
+    height: Math.min(height * 0.36, 290),
+    zIndex: 2,
+    marginBottom: -4,
   },
-  bottomCard: {
-    backgroundColor: '#FFFFFF',
+  bottomSection: {
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 12,
+    backgroundColor: 'transparent',
   },
   logInButton: {
-    backgroundColor: '#2B7BF6',
+    backgroundColor: '#1E6CEB',
     borderRadius: 26,
     height: 52,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2B7BF6',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.18,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -221,11 +237,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#2B7BF6',
+    borderColor: '#1E6CEB',
     marginTop: 12,
   },
   signUpButtonText: {
-    color: '#2B7BF6',
+    color: '#1E6CEB',
     fontSize: 16,
     fontWeight: '800',
     letterSpacing: 0.3,
