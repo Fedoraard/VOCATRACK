@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
   },
   decorativeCircle: {
     position: 'absolute',
-    top: 70,
-    left: -90,
-    width: 220,
-    height: 220,
-    borderRadius: 110,
+    top: 135,
+    left: -115,
+    width: 240,
+    height: 240,
+    borderRadius: 120,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.22)',
+    borderColor: 'rgba(255, 255, 255, 0.20)',
   },
   topSafeArea: {
     flex: 1,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 12,
+    paddingTop: 14,
     paddingBottom: 4,
   },
   logo: {
@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 10,
-    marginBottom: 2,
+    marginTop: 50,
+    marginBottom: 8,
   },
   titleLine: {
     fontSize: 34,
@@ -145,28 +145,28 @@ const styles = StyleSheet.create({
   },
   accentGroup: {
     justifyContent: 'center',
-    gap: 5,
+    gap: 4,
   },
   accentLine: {
-    height: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: 2,
+    height: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    borderRadius: 1,
   },
   accentLineTopLeft: {
-    width: 14,
-    transform: [{ rotate: '15deg' }],
+    width: 12,
+    transform: [{ rotate: '-14deg' }],
   },
   accentLineBottomLeft: {
-    width: 16,
-    transform: [{ rotate: '15deg' }],
+    width: 15,
+    transform: [{ rotate: '-14deg' }],
   },
   accentLineTopRight: {
-    width: 14,
-    transform: [{ rotate: '-15deg' }],
+    width: 12,
+    transform: [{ rotate: '14deg' }],
   },
   accentLineBottomRight: {
-    width: 16,
-    transform: [{ rotate: '-15deg' }],
+    width: 15,
+    transform: [{ rotate: '14deg' }],
   },
   jurusanText: {
     fontSize: 36,
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
     textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 20,
+    marginTop: 12,
+    paddingHorizontal: 36,
     fontWeight: '500',
   },
   illustrationContainer: {
