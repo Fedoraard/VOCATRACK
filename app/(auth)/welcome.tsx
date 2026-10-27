@@ -62,18 +62,13 @@ export default function WelcomeScreen() {
           </Text>
         </View>
 
-        {/* Center 3D Characters with Foreground Prominent Clouds */}
+        {/* Center 3D Characters with Natural Billowing Clouds */}
         <View style={styles.illustrationContainer}>
           <Image
             source={require('../../assets/hero_students.png')}
             style={styles.heroImage}
-            resizeMode="contain"
+            resizeMode="cover"
           />
-
-          {/* Prominent billowing clouds leading smoothly into the white bottom */}
-          <View style={styles.cloudForeground}>
-            <CloudHighlights height={85} fadeBottom={false} />
-          </View>
         </View>
       </SafeAreaView>
 
@@ -102,11 +97,11 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2F80ED',
+    backgroundColor: '#3A93FD',
   },
   decorativeCircle: {
     position: 'absolute',
-    top: 80,
+    top: 70,
     left: -90,
     width: 220,
     height: 220,
@@ -120,7 +115,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 14,
+    paddingTop: 12,
     paddingBottom: 4,
   },
   logo: {
@@ -130,8 +125,8 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 14,
-    marginBottom: 4,
+    marginTop: 10,
+    marginBottom: 2,
   },
   titleLine: {
     fontSize: 34,
@@ -184,30 +179,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 8,
     paddingHorizontal: 20,
     fontWeight: '500',
   },
   illustrationContainer: {
-    flex: 1,
     width: '100%',
+    height: width / 1.292,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    position: 'relative',
-    marginTop: 2,
+    marginBottom: -2,
   },
   heroImage: {
-    width: width * 0.98,
-    height: Math.min(height * 0.36, 275),
-    zIndex: 2,
-    marginBottom: -4,
-  },
-  cloudForeground: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    zIndex: 10,
+    width: width,
+    height: width / 1.292,
   },
   whiteBottomSection: {
     backgroundColor: '#FFFFFF',

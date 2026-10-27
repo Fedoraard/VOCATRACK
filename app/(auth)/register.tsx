@@ -99,12 +99,8 @@ export default function RegisterScreen() {
             <Image
               source={require('../../assets/hero_students.png')}
               style={styles.heroImage}
-              resizeMode="contain"
+              resizeMode="cover"
             />
-            {/* Layered billowing clouds under characters */}
-            <View style={styles.cloudOverlay}>
-              <CloudHighlights height={75} fadeBottom={false} />
-            </View>
           </View>
 
           {/* Bottom Card: White Form Area (Clean White matching Image 3) */}
@@ -248,7 +244,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3792FD',
+    backgroundColor: '#3A93FD',
   },
   keyboardContainer: {
     flex: 1,
@@ -259,23 +255,13 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    height: Math.min(height * 0.30, 245),
-    backgroundColor: '#2F80ED',
-    position: 'relative',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    height: Math.min(height * 0.32, 260),
+    backgroundColor: '#3A93FD',
     overflow: 'hidden',
   },
   heroImage: {
     width: '100%',
     height: '100%',
-  },
-  cloudOverlay: {
-    position: 'absolute',
-    bottom: -1,
-    left: 0,
-    right: 0,
-    zIndex: 10,
   },
   formCard: {
     backgroundColor: '#FFFFFF',
