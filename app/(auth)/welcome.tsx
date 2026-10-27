@@ -21,11 +21,12 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Background Decorative Circles */}
+      {/* Background Decorative Circle */}
       <View style={styles.decorativeCircle} />
 
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        {/* Top Brand Logo - Shifted downward */}
+      {/* Upper Blue Section */}
+      <SafeAreaView style={styles.topSafeArea} edges={['top', 'left', 'right']}>
+        {/* Top Brand Logo */}
         <View style={styles.topBar}>
           <Image
             source={require('../../assets/vocatrack_logo_white.png')}
@@ -34,7 +35,7 @@ export default function WelcomeScreen() {
           />
         </View>
 
-        {/* Heading Section - Centered in upper area */}
+        {/* Heading Section */}
         <View style={styles.headerSection}>
           <Text style={styles.titleLine}>Temukan Jalur</Text>
           <Text style={styles.titleLine}>Karier dari</Text>
@@ -69,31 +70,31 @@ export default function WelcomeScreen() {
             resizeMode="contain"
           />
 
-          {/* Prominent billowing clouds placed IN FRONT of avatar */}
+          {/* Prominent billowing clouds leading smoothly into the white bottom */}
           <View style={styles.cloudForeground}>
-            <CloudHighlights height={115} fadeBottom={true} />
+            <CloudHighlights height={85} fadeBottom={false} />
           </View>
         </View>
-
-        {/* Bottom Action Buttons (Directly on Blue Background) */}
-        <View style={[styles.bottomSection, { paddingBottom: Math.max(insets.bottom, 22) + 6 }]}>
-          <TouchableOpacity
-            style={styles.logInButton}
-            activeOpacity={0.88}
-            onPress={() => router.push('/(auth)/login')}
-          >
-            <Text style={styles.logInButtonText}>Log In</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.signUpButton}
-            activeOpacity={0.88}
-            onPress={() => router.push('/(auth)/register')}
-          >
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
       </SafeAreaView>
+
+      {/* Lower White Section with Action Buttons (Matching Image 1) */}
+      <View style={[styles.whiteBottomSection, { paddingBottom: Math.max(insets.bottom, 20) + 12 }]}>
+        <TouchableOpacity
+          style={styles.logInButton}
+          activeOpacity={0.88}
+          onPress={() => router.push('/(auth)/login')}
+        >
+          <Text style={styles.logInButtonText}>Log In</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.signUpButton}
+          activeOpacity={0.88}
+          onPress={() => router.push('/(auth)/register')}
+        >
+          <Text style={styles.signUpButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -101,40 +102,40 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3792FD',
+    backgroundColor: '#2F80ED',
   },
   decorativeCircle: {
     position: 'absolute',
-    top: 90,
-    left: -100,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    borderWidth: 2,
+    top: 80,
+    left: -90,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.22)',
   },
-  safeArea: {
+  topSafeArea: {
     flex: 1,
     justifyContent: 'space-between',
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 42,
+    paddingTop: 14,
     paddingBottom: 4,
   },
   logo: {
-    width: 145,
-    height: 33,
+    width: 140,
+    height: 32,
   },
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 24,
-    marginBottom: 8,
+    marginTop: 14,
+    marginBottom: 4,
   },
   titleLine: {
     fontSize: 34,
-    fontWeight: '900',
+    fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: -0.5,
     lineHeight: 40,
@@ -174,77 +175,77 @@ const styles = StyleSheet.create({
   },
   jurusanText: {
     fontSize: 36,
-    fontWeight: '900',
+    fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   subtitle: {
     color: 'rgba(255, 255, 255, 0.94)',
-    fontSize: 13.5,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 19,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 10,
     paddingHorizontal: 20,
     fontWeight: '500',
   },
   illustrationContainer: {
     flex: 1,
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     position: 'relative',
-    marginTop: -8,
+    marginTop: 2,
   },
   heroImage: {
-    width: width * 0.96,
-    height: Math.min(height * 0.35, 275),
+    width: width * 0.98,
+    height: Math.min(height * 0.36, 275),
     zIndex: 2,
-    marginBottom: 6,
+    marginBottom: -4,
   },
   cloudForeground: {
     position: 'absolute',
-    bottom: -6,
+    bottom: -1,
     left: 0,
     right: 0,
     zIndex: 10,
   },
-  bottomSection: {
+  whiteBottomSection: {
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 24,
-    paddingTop: 6,
-    backgroundColor: 'transparent',
+    paddingTop: 16,
   },
   logInButton: {
-    backgroundColor: '#2563EB',
-    borderRadius: 26,
-    height: 52,
+    backgroundColor: '#2B7BF6',
+    borderRadius: 25,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: '#2B7BF6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.22,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 3,
   },
   logInButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     letterSpacing: 0.3,
   },
   signUpButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 26,
-    height: 52,
+    borderRadius: 25,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#2563EB',
+    borderWidth: 1.5,
+    borderColor: '#2B7BF6',
     marginTop: 12,
   },
   signUpButtonText: {
-    color: '#2563EB',
+    color: '#2B7BF6',
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     letterSpacing: 0.3,
   },
 });

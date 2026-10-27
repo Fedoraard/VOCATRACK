@@ -17,7 +17,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GoogleLogo } from '../../components/auth/GoogleLogo';
-import { AuthBackgroundDecorations } from '../../components/auth/AuthBackgroundDecorations';
 import { CloudHighlights } from '../../components/common/CloudHighlights';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -104,14 +103,12 @@ export default function RegisterScreen() {
             />
             {/* Layered billowing clouds under characters */}
             <View style={styles.cloudOverlay}>
-              <CloudHighlights height={65} fadeBottom={false} />
+              <CloudHighlights height={75} fadeBottom={false} />
             </View>
           </View>
 
-          {/* Bottom Card: White Form Area */}
+          {/* Bottom Card: White Form Area (Clean White matching Image 3) */}
           <View style={styles.formCard}>
-            <AuthBackgroundDecorations />
-
             {/* Logo */}
             <View style={styles.logoRow}>
               <Image
@@ -262,8 +259,8 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    height: Math.min(height * 0.32, 260),
-    backgroundColor: '#3792FD',
+    height: Math.min(height * 0.30, 245),
+    backgroundColor: '#2F80ED',
     position: 'relative',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -275,7 +272,7 @@ const styles = StyleSheet.create({
   },
   cloudOverlay: {
     position: 'absolute',
-    bottom: -2,
+    bottom: -1,
     left: 0,
     right: 0,
     zIndex: 10,
@@ -283,10 +280,9 @@ const styles = StyleSheet.create({
   formCard: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 24,
-    paddingTop: 10,
+    paddingTop: 12,
     flex: 1,
     position: 'relative',
-    overflow: 'hidden',
   },
   logoRow: {
     alignItems: 'center',
@@ -294,16 +290,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   logoImage: {
-    width: 210,
-    height: 48,
+    width: 200,
+    height: 44,
   },
   subtitle: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#64748B',
     textAlign: 'center',
     marginTop: 6,
-    marginBottom: 16,
+    marginBottom: 14,
   },
   errorBox: {
     flexDirection: 'row',
@@ -321,19 +317,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   inputWrapper: {
-    height: 48,
+    height: 46,
     borderWidth: 1.5,
     borderColor: '#70A6FA',
-    borderRadius: 14,
+    borderRadius: 12,
     paddingHorizontal: 16,
-    marginBottom: 12,
+    marginBottom: 11,
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    shadowColor: '#2563EB',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
   },
   passwordWrapper: {
     flexDirection: 'row',
@@ -357,16 +348,16 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: '#2B7BF6',
     borderRadius: 25,
-    height: 50,
+    height: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 6,
+    marginTop: 4,
     marginBottom: 12,
     shadowColor: '#2B7BF6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.28,
+    shadowOpacity: 0.22,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 3,
   },
   disabledButton: {
     opacity: 0.7,
@@ -374,13 +365,13 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     letterSpacing: 0.3,
   },
   googleButton: {
     backgroundColor: '#EBF5FF',
     borderRadius: 25,
-    height: 50,
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -395,17 +386,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 18,
+    marginTop: 16,
   },
   footerPrompt: {
-    color: '#3B82F6',
+    color: '#2B7BF6',
     fontSize: 13,
     fontWeight: '500',
   },
   footerLink: {
     color: '#F59E0B',
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
     textDecorationLine: 'underline',
   },
 });

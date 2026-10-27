@@ -47,8 +47,8 @@ export const CloudHighlights: React.FC<CloudHighlightsProps> = ({
           {/* Front cloud pure white with subtle base shadow or fade */}
           <LinearGradient id="cloudGradFront" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={1} />
-            <Stop offset={fadeBottom ? "65%" : "80%"} stopColor="#FFFFFF" stopOpacity={0.98} />
-            <Stop offset="100%" stopColor={fadeBottom ? "#FFFFFF" : "#EBF5FF"} stopOpacity={fadeBottom ? 0 : 0.95} />
+            <Stop offset={fadeBottom ? "65%" : "80%"} stopColor="#FFFFFF" stopOpacity={1} />
+            <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={fadeBottom ? 0 : 1} />
           </LinearGradient>
         </Defs>
 
