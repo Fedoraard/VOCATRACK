@@ -9,12 +9,14 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { EducationAppBackground } from '../components/common/EducationAppBackground';
+import { askVocaBot } from '../utils/ai';
 
 interface ChatMessage {
   id: string;
@@ -26,6 +28,7 @@ interface ChatMessage {
 export default function VocaBotScreen() {
   const insets = useSafeAreaInsets();
   const [inputText, setInputText] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'm-1',
@@ -35,40 +38,43 @@ export default function VocaBotScreen() {
     },
   ]);
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const content = (textToSend || inputText).trim();
-    if (!content) return;
+    if (!content || isThinking) return;
+
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const userMsg: ChatMessage = {
       id: `u-${Date.now()}`,
       sender: 'user',
       text: content,
-      time: '09.02',
+      time: currentTime,
     };
 
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
+    setIsThinking(true);
 
-    // Simulated Smart VocaBot AI response
-    setTimeout(() => {
-      let botReply =
-        'Pertanyaan yang bagus! Berdasarkan data kurikulum vokasi terkini, bidang ini memiliki prospek industri yang sangat luas dan banyak dicari mitra industri.';
-      if (content.toLowerCase().includes('dkv')) {
-        botReply =
-          'Peluang karier lulusan DKV meliputi UI/UX Designer, Motion Graphic Artist, Illustrator, hingga Brand Specialist dengan rentang gaji awal industri Rp 5jt - 9jt.';
-      } else if (content.toLowerCase().includes('jurusan')) {
-        botReply =
-          'Tips memilih jurusan: Sesuaikan minat praktikal Anda, cek laboratorium praktek sekolah, dan perhatikan sertifikasi kompetensi BNSP yang ditawarkan.';
-      }
-
+    try {
+      const botReply = await askVocaBot(content, messages);
       const botMsg: ChatMessage = {
         id: `b-${Date.now()}`,
         sender: 'bot',
         text: botReply,
-        time: '09.02',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, botMsg]);
-    }, 600);
+    } catch {
+      const botMsg: ChatMessage = {
+        id: `b-${Date.now()}`,
+        sender: 'bot',
+        text: 'Maaf, terjadi kendala saat menghubungkan ke server AI. Coba tanyakan lagi ya!',
+        time: currentTime,
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   return (
@@ -192,6 +198,21 @@ export default function VocaBotScreen() {
                 </Text>
               </View>
             ))}
+
+            {isThinking && (
+              <View
+                style={[
+                  styles.messageBubble,
+                  styles.botBubble,
+                  { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12 },
+                ]}
+              >
+                <ActivityIndicator size="small" color="#2B7BF6" />
+                <Text style={[styles.botMessageText, { fontStyle: 'italic', color: '#64748B' }]}>
+                  VocaBot sedang berpikir...
+                </Text>
+              </View>
+            )}
           </ScrollView>
 
           {/* Bottom Chat Input Bar */}
