@@ -5,7 +5,6 @@ import Svg, {
   Circle,
   Line,
   G,
-  Text as SvgText,
   Defs,
   RadialGradient,
   Stop,
@@ -22,23 +21,20 @@ export const EducationAppBackground: React.FC<EducationAppBackgroundProps> = ({
   style,
 }) => {
   const isDashboard = variant === 'dashboard';
-  const isChat = variant === 'chat';
 
-  // For dashboard, ALL elements are pure white (as requested: "elemnet nya putih" on blue).
-  // For standard light & chat, vibrant blues and warm ambers pop against the soft pale background.
-  const topPrimary = isDashboard ? '#FFFFFF' : '#2563EB';
-  const topSecondary = isDashboard ? 'rgba(255, 255, 255, 0.82)' : '#0284C7';
-  const topAccent = isDashboard ? '#FFFFFF' : '#F59E0B';
-  const topSubtle = isDashboard ? 'rgba(255, 255, 255, 0.65)' : '#94A3B8';
+  // Palette:
+  // On dashboard (solid blue), white accents create a crisp blueprint watermark.
+  // On light/chat (pastel sky blue), royal blue, sky blue, and warm amber create an elegant, airy aesthetic.
+  const primaryColor = isDashboard ? '#FFFFFF' : '#2563EB';
+  const secondaryColor = isDashboard ? 'rgba(255, 255, 255, 0.85)' : '#0284C7';
+  const accentColor = isDashboard ? '#FFFFFF' : '#F59E0B';
+  const subtleColor = isDashboard ? 'rgba(255, 255, 255, 0.65)' : '#64748B';
 
-  const midPrimary = isDashboard ? '#FFFFFF' : '#2563EB';
-  const midSecondary = isDashboard ? 'rgba(255, 255, 255, 0.82)' : '#0284C7';
-  const midAccent = isDashboard ? '#FFFFFF' : '#F59E0B';
-  const midIndigo = isDashboard ? 'rgba(255, 255, 255, 0.88)' : '#6366F1';
-  const midSubtle = isDashboard ? 'rgba(255, 255, 255, 0.65)' : '#94A3B8';
-
-  // Base opacity: 0.38 for dashboard white doodles so they are clearly visible yet elegant
-  const baseOpacity = isDashboard ? 0.38 : (isChat ? 0.46 : 0.38);
+  // Balanced opacities: clearly visible ("masih terlihat") yet calm & sophisticated ("tidak terlalu rame")
+  const primaryOpacity = isDashboard ? 0.22 : 0.23;
+  const secondaryOpacity = isDashboard ? 0.17 : 0.19;
+  const accentOpacity = isDashboard ? 0.28 : 0.30;
+  const subtleOpacity = isDashboard ? 0.13 : 0.15;
 
   return (
     <View pointerEvents="none" style={[styles.container, style]}>
@@ -50,17 +46,17 @@ export const EducationAppBackground: React.FC<EducationAppBackgroundProps> = ({
         style={StyleSheet.absoluteFill}
       >
         <Defs>
-          {/* Soft ambient corner glows for background depth (disabled on solid blue dashboard) */}
-          <RadialGradient id="eduGlowTop" cx="15%" cy="8%" r="45%" fx="15%" fy="8%">
-            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.18} />
+          {/* Luminous, smooth ambient corner glows */}
+          <RadialGradient id="eduGlowTop" cx="15%" cy="8%" r="48%" fx="15%" fy="8%">
+            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.15} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
-          <RadialGradient id="eduGlowMid" cx="88%" cy="45%" r="45%" fx="88%" fy="45%">
-            <Stop offset="0%" stopColor="#818CF8" stopOpacity={isDashboard ? 0 : 0.14} />
+          <RadialGradient id="eduGlowMid" cx="88%" cy="45%" r="48%" fx="88%" fy="45%">
+            <Stop offset="0%" stopColor="#818CF8" stopOpacity={isDashboard ? 0 : 0.11} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
-          <RadialGradient id="eduGlowBottom" cx="12%" cy="85%" r="40%" fx="12%" fy="85%">
-            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.16} />
+          <RadialGradient id="eduGlowBottom" cx="12%" cy="85%" r="42%" fx="12%" fy="85%">
+            <Stop offset="0%" stopColor="#38BDF8" stopOpacity={isDashboard ? 0 : 0.13} />
             <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
           </RadialGradient>
         </Defs>
@@ -71,456 +67,233 @@ export const EducationAppBackground: React.FC<EducationAppBackgroundProps> = ({
         <Rect x="0" y="0" width="400" height="820" fill="url(#eduGlowBottom)" />
 
         {/* ================================================================= */}
-        {/* SECTION 1: TOP AREA (Y: 20 - 220)                                */}
+        {/* TOP REGION (Y: 20 - 160) - Framing the Header                      */}
         {/* ================================================================= */}
 
-        {/* 1.1 Dashed curving loop - Top Left */}
+        {/* 1. Math Radical (√x) - Sleek & precise at Top Left */}
+        <G opacity={secondaryOpacity}>
+          <Path
+            d="M 18 52 L 23 52 L 27 63 L 33 42 L 50 42"
+            fill="none"
+            stroke={secondaryColor}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <Line x1={38} y1={49} x2={46} y2={57} stroke={secondaryColor} strokeWidth="1.2" strokeLinecap="round" />
+          <Line x1={46} y1={49} x2={38} y2={57} stroke={secondaryColor} strokeWidth="1.2" strokeLinecap="round" />
+        </G>
+
+        {/* 2. Top-Left Delicate Sparkle Star */}
         <Path
-          d="M 12 28 C 45 12, 75 30, 60 70 C 45 105, 15 110, 32 145 C 48 175, 80 170, 70 205"
-          fill="none"
-          stroke={topSecondary}
-          strokeWidth="1.8"
-          strokeDasharray="5 5"
-          strokeLinecap="round"
-          opacity={baseOpacity}
+          d="M 68 28 C 68 32, 72 32, 72 32 C 72 32, 68 32, 68 36 C 68 32, 64 32, 64 32 C 64 32, 68 32, 68 28 Z"
+          fill={accentColor}
+          opacity={accentOpacity}
         />
 
-        {/* 1.2 Graduation Cap (Toga Wisuda) - Top Right */}
-        <G opacity={baseOpacity + 0.04}>
+        {/* 3. Minimalist Graduation Cap (Toga) - Top Right Corner */}
+        <G opacity={primaryOpacity}>
+          {/* Cap Diamond */}
           <Path
-            d="M 334 45 L 358 35 L 382 45 L 358 55 Z"
+            d="M 336 44 L 360 34 L 384 44 L 360 54 Z"
             fill="none"
-            stroke={topPrimary}
-            strokeWidth="1.8"
+            stroke={primaryColor}
+            strokeWidth="1.35"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {/* Under cap curve */}
           <Path
-            d="M 344 50 L 344 59 C 344 65, 372 65, 372 59 L 372 50"
+            d="M 346 49 C 346 56, 374 56, 374 49"
             fill="none"
-            stroke={topPrimary}
-            strokeWidth="1.8"
+            stroke={primaryColor}
+            strokeWidth="1.35"
             strokeLinecap="round"
           />
+          {/* Tassel line & bead */}
           <Path
-            d="M 382 45 L 387 53 L 387 63"
+            d="M 384 44 L 388 52 L 388 60"
             fill="none"
-            stroke={topAccent}
-            strokeWidth="1.6"
+            stroke={accentColor}
+            strokeWidth="1.2"
             strokeLinecap="round"
           />
-          <Circle cx={387} cy={65} r={2} fill={topAccent} />
+          <Circle cx={388} cy={62} r={1.6} fill={accentColor} />
         </G>
 
-        {/* 1.3 Math Radical / Square Root (√x) - Top Left */}
-        <G opacity={baseOpacity}>
-          <Path
-            d="M 22 55 L 26 55 L 30 65 L 36 44 L 52 44"
-            fill="none"
-            stroke={topPrimary}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <Line x1={40} y1={51} x2={48} y2={59} stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={48} y1={51} x2={40} y2={59} stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-        </G>
-
-        {/* 1.4 Center-Top: Open Book & Bookmark Doodle */}
-        <G opacity={baseOpacity}>
-          <Path
-            d="M 178 50 C 188 46, 196 48, 202 52 C 208 48, 216 46, 226 50 L 226 66 C 216 62, 208 64, 202 68 C 196 64, 188 62, 178 66 Z"
-            fill="none"
-            stroke={topPrimary}
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-          <Line x1={202} y1={52} x2={202} y2={68} stroke={topPrimary} strokeWidth="1.8" strokeLinecap="round" />
-          <Path d="M 200 68 L 200 76 L 203 73 L 206 76 L 206 68" fill={topAccent} opacity={0.6} />
-        </G>
-
-        {/* 1.5 Slanted Pencil Doodle - Upper Left */}
-        <G opacity={baseOpacity + 0.02}>
-          <Path
-            d="M 16 115 L 28 88 L 36 92 L 24 119 Z"
-            fill="none"
-            stroke={topAccent}
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-          <Path d="M 16 115 L 12 124 L 24 119 Z" fill={topAccent} />
-          <Line x1={26} y1={93} x2={34} y2={97} stroke={topAccent} strokeWidth="1.4" />
-        </G>
-
-        {/* 1.6 Math Sigma (∑) - Upper Right */}
-        <G opacity={baseOpacity}>
-          <Path
-            d="M 378 105 L 354 105 L 366 117 L 354 129 L 378 129"
-            fill="none"
-            stroke={topPrimary}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </G>
-
-        {/* 1.7 Center Formula: E = mc² Doodle */}
-        <G opacity={baseOpacity - 0.05}>
-          {/* E */}
-          <Path d="M 180 140 L 180 152 L 188 152 M 180 146 L 186 146 M 180 140 L 188 140" fill="none" stroke={topPrimary} strokeWidth="1.6" strokeLinecap="round" />
-          {/* = */}
-          <Line x1={192} y1={144} x2={198} y2={144} stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={192} y1={148} x2={198} y2={148} stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          {/* m */}
-          <Path d="M 202 152 L 202 144 Q 205 142, 207 144 L 207 152 Q 210 142, 212 144 L 212 152" fill="none" stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          {/* c */}
-          <Path d="M 221 144 C 218 144, 216 146, 216 148 C 216 150, 218 152, 221 152" fill="none" stroke={topPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          {/* ² */}
-          <Path d="M 223 140 Q 226 138, 226 140 T 223 143 L 227 143" fill="none" stroke={topAccent} strokeWidth="1.4" strokeLinecap="round" />
-        </G>
-
-        {/* 1.8 Top-Right 3x4 Dot Grid Matrix */}
-        <G opacity={baseOpacity - 0.06}>
-          {[0, 1, 2].map((col) =>
-            [0, 1, 2, 3].map((row) => (
-              <Circle
-                key={`top-dot-${col}-${row}`}
-                cx={348 + col * 12}
-                cy={145 + row * 12}
-                r={1.7}
-                fill={topSecondary}
-              />
-            ))
-          )}
-        </G>
-
-        {/* 1.9 Sparkles & Accents - Top */}
-        <Path
-          d="M 105 32 C 105 37, 110 37, 110 37 C 110 37, 105 37, 105 42 C 105 37, 100 37, 100 37 C 100 37, 105 37, 105 32 Z"
-          fill={topAccent}
-          opacity={0.5}
-        />
-        <Path
-          d="M 312 85 C 312 90, 317 90, 317 90 C 317 90, 312 90, 312 95 C 312 90, 307 90, 307 90 C 307 90, 312 90, 312 85 Z"
-          fill={topSecondary}
-          opacity={0.46}
-        />
-        <Circle cx={20} cy={165} r={4.5} fill="none" stroke={topSecondary} strokeWidth="1.5" opacity={baseOpacity} />
-
-        {/* ================================================================= */}
-        {/* SECTION 2: UPPER-MID AREA (Y: 220 - 420)                          */}
-        {/* ================================================================= */}
-
-        {/* 2.1 Open Book (Buku Terbuka) - Mid Right */}
-        <G opacity={baseOpacity}>
-          <Path
-            d="M 328 230 C 336 227, 345 229, 352 233 C 359 229, 368 227, 376 230 L 376 244 C 368 241, 359 243, 352 247 C 345 243, 336 241, 328 244 Z"
-            fill="none"
-            stroke={midPrimary}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <Line x1={352} y1={233} x2={352} y2={247} stroke={midPrimary} strokeWidth="1.8" strokeLinecap="round" />
-          <Line x1={334} y1={234} x2={346} y2={237} stroke={midSecondary} strokeWidth="1.2" strokeLinecap="round" />
-          <Line x1={358} y1={237} x2={370} y2={234} stroke={midSecondary} strokeWidth="1.2" strokeLinecap="round" />
-        </G>
-
-        {/* 2.2 Set Square Ruler (Penggaris Segitiga Vokasi) - Mid Left */}
-        <G opacity={baseOpacity + 0.02}>
-          <Path
-            d="M 14 235 L 14 280 L 52 280 Z"
-            fill="none"
-            stroke={midSecondary}
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-          <Path d="M 20 251 L 20 273 L 38 273 Z" fill="none" stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={14} y1={243} x2={18} y2={243} stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={14} y1={254} x2={18} y2={254} stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={14} y1={265} x2={18} y2={265} stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={26} y1={280} x2={26} y2={276} stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={37} y1={280} x2={37} y2={276} stroke={midSecondary} strokeWidth="1.4" />
-        </G>
-
-        {/* 2.3 Center-Mid: Science Microscope / Magnifier Doodle */}
-        <G opacity={baseOpacity - 0.04}>
-          <Circle cx={195} cy={275} r={9} fill="none" stroke={midSecondary} strokeWidth="1.8" />
-          <Line x1={202} y1={282} x2={212} y2={292} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          {/* Star inside magnifier */}
-          <Path d="M 195 271 L 196 274 L 199 275 L 196 276 L 195 279 L 194 276 L 191 275 L 194 274 Z" fill={midAccent} />
-        </G>
-
-        {/* 2.4 Wavy Dashed Line - Mid Right */}
-        <Path
-          d="M 386 265 C 360 280, 350 315, 375 340 C 392 360, 375 395, 355 415"
-          fill="none"
-          stroke={midSecondary}
-          strokeWidth="1.8"
-          strokeDasharray="4 5"
-          strokeLinecap="round"
-          opacity={baseOpacity}
-        />
-
-        {/* 2.5 Atom / STEM Science Orbit - Mid Right */}
-        <G opacity={baseOpacity + 0.02}>
-          <Path
-            d="M 330 315 C 330 303, 368 303, 368 315 C 368 327, 330 327, 330 315 Z"
-            transform="rotate(-28 349 315)"
-            fill="none"
-            stroke={midIndigo}
-            strokeWidth="1.6"
-            strokeDasharray="4 3"
-          />
-          <Path
-            d="M 330 315 C 330 303, 368 303, 368 315 C 368 327, 330 327, 330 315 Z"
-            transform="rotate(28 349 315)"
-            fill="none"
-            stroke={midSecondary}
-            strokeWidth="1.6"
-          />
-          <Circle cx={349} cy={315} r={3} fill={midIndigo} />
-          <Circle cx={366} cy={308} r={1.6} fill={midSecondary} />
-        </G>
-
-        {/* 2.6 Center-Mid 2: Calculator / Tech Grid Doodle */}
-        <G opacity={baseOpacity - 0.05}>
-          <Rect x={180} y={350} width={26} height={34} rx={4} fill="none" stroke={midPrimary} strokeWidth="1.6" />
-          <Rect x={184} y={354} width={18} height={7} rx={1.5} fill="none" stroke={midSecondary} strokeWidth="1.2" />
-          {/* Key dots */}
-          <Circle cx={188} cy={367} r={1.3} fill={midPrimary} />
-          <Circle cx={193} cy={367} r={1.3} fill={midPrimary} />
-          <Circle cx={198} cy={367} r={1.3} fill={midPrimary} />
-          <Circle cx={188} cy={373} r={1.3} fill={midPrimary} />
-          <Circle cx={193} cy={373} r={1.3} fill={midPrimary} />
-          <Circle cx={198} cy={373} r={1.3} fill={midAccent} />
-        </G>
-
-        {/* 2.7 Idea Lightbulb - Mid Left */}
-        <G opacity={baseOpacity + 0.04}>
-          <Path
-            d="M 22 355 C 16 349, 16 339, 23 333 C 30 327, 40 327, 47 333 C 54 339, 54 349, 48 355 C 44 359, 43 362, 42 366 L 28 366 C 27 362, 26 359, 22 355 Z"
-            fill="none"
-            stroke={midAccent}
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <Line x1={30} y1={369} x2={40} y2={369} stroke={midAccent} strokeWidth="1.6" strokeLinecap="round" />
-          <Line x1={32} y1={372} x2={38} y2={372} stroke={midAccent} strokeWidth="1.6" strokeLinecap="round" />
-          {/* Ray bursts */}
-          <Line x1={35} y1={320} x2={35} y2={324} stroke={midAccent} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={17} y1={327} x2={20} y2={330} stroke={midAccent} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={53} y1={327} x2={50} y2={330} stroke={midAccent} strokeWidth="1.5" strokeLinecap="round" />
-        </G>
-
-        {/* 2.8 Grade A+ Badge Doodle - Mid Left */}
-        <G opacity={baseOpacity}>
-          <Circle cx={42} cy={410} r={15} fill="none" stroke={midPrimary} strokeWidth="1.6" strokeDasharray="4 3" />
-          <Path d="M 34 416 L 38 404 L 42 416 Z" fill="none" stroke={midPrimary} strokeWidth="1.5" />
-          <Line x1={35} y1={412} x2={41} y2={412} stroke={midPrimary} strokeWidth="1.3" />
-          <Line x1={45} y1={407} x2={51} y2={407} stroke={midAccent} strokeWidth="1.6" strokeLinecap="round" />
-          <Line x1={48} y1={404} x2={48} y2={410} stroke={midAccent} strokeWidth="1.6" strokeLinecap="round" />
-        </G>
-
-        {/* 2.9 Pi Symbol (π) - Mid Left */}
-        <G opacity={baseOpacity}>
-          <Line x1={12} y1={300} x2={28} y2={300} stroke={midPrimary} strokeWidth="1.6" strokeLinecap="round" />
-          <Path d="M 16 300 L 16 312 C 16 314, 15 315, 13 315" fill="none" stroke={midPrimary} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={24} y1={300} x2={24} y2={315} stroke={midPrimary} strokeWidth="1.5" strokeLinecap="round" />
-        </G>
-
-        {/* ================================================================= */}
-        {/* SECTION 3: LOWER-MID AREA (Y: 420 - 620)                          */}
-        {/* ================================================================= */}
-
-        {/* 3.1 Chemistry Erlenmeyer Lab Flask - Lower Right */}
-        <G opacity={baseOpacity + 0.02}>
-          <Line x1={348} y1={435} x2={358} y2={435} stroke={midSecondary} strokeWidth="1.8" strokeLinecap="round" />
-          <Line x1={350} y1={435} x2={350} y2={446} stroke={midSecondary} strokeWidth="1.6" />
-          <Line x1={356} y1={435} x2={356} y2={446} stroke={midSecondary} strokeWidth="1.6" />
-          <Path
-            d="M 350 446 L 334 472 C 332 475, 335 478, 338 478 L 368 478 C 371 478, 374 475, 372 472 L 356 446 Z"
-            fill="none"
-            stroke={midSecondary}
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-          <Path d="M 340 468 Q 353 464, 366 468" fill="none" stroke={midPrimary} strokeWidth="1.5" />
-          <Circle cx={350} cy={458} r={1.5} fill={midPrimary} />
-          <Circle cx={355} cy={452} r={1.2} fill={midPrimary} />
-        </G>
-
-        {/* 3.2 Center-Lower: 3 Stacked Books (Tumpukan Buku Pelajaran) */}
-        <G opacity={baseOpacity - 0.03}>
-          {/* Book 1 (bottom) */}
-          <Path d="M 180 475 L 222 475 L 220 482 L 178 482 Z" fill="none" stroke={midPrimary} strokeWidth="1.6" strokeLinejoin="round" />
-          {/* Book 2 (middle) */}
-          <Path d="M 183 468 L 225 468 L 223 475 L 181 475 Z" fill="none" stroke={midSecondary} strokeWidth="1.6" strokeLinejoin="round" />
-          {/* Book 3 (top) */}
-          <Path d="M 181 461 L 223 461 L 221 468 L 179 468 Z" fill="none" stroke={midAccent} strokeWidth="1.6" strokeLinejoin="round" />
-        </G>
-
-        {/* 3.3 Drafting Compass (Jangka Matematika) - Lower Left */}
-        <G opacity={baseOpacity}>
-          <Circle cx={25} cy={460} r={2.5} fill="none" stroke={midPrimary} strokeWidth="1.6" />
-          <Line x1={25} y1={462} x2={15} y2={488} stroke={midPrimary} strokeWidth="1.6" strokeLinecap="round" />
-          <Line x1={25} y1={462} x2={35} y2={488} stroke={midPrimary} strokeWidth="1.6" strokeLinecap="round" />
-          <Line x1={18} y1={474} x2={32} y2={474} stroke={midSecondary} strokeWidth="1.3" />
-        </G>
-
-        {/* 3.4 Protractor Arc (Busur Derajat) - Lower Left */}
-        <G opacity={baseOpacity - 0.02}>
-          <Path
-            d="M 12 535 A 22 22 0 0 1 56 535 Z"
-            fill="none"
-            stroke={midSecondary}
-            strokeWidth="1.6"
-            strokeLinejoin="round"
-          />
-          <Line x1={34} y1={535} x2={34} y2={530} stroke={midSecondary} strokeWidth="1.4" />
-          <Line x1={24} y1={535} x2={26} y2={531} stroke={midSecondary} strokeWidth="1.2" />
-          <Line x1={44} y1={535} x2={42} y2={531} stroke={midSecondary} strokeWidth="1.2" />
-        </G>
-
-        {/* 3.5 Paper Airplane (Pesawat Kertas) - Lower Right */}
-        <G opacity={baseOpacity + 0.04}>
-          <Path
-            d="M 334 525 L 378 537 L 352 550 L 344 563 L 341 547 Z"
-            fill="none"
-            stroke={midPrimary}
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-          />
-          <Path d="M 378 537 L 341 547" fill="none" stroke={midPrimary} strokeWidth="1.4" />
-        </G>
-
-        {/* 3.6 Dashed Airplane Contrail / Flight Path */}
-        <Path
-          d="M 220 575 C 265 585, 305 565, 335 540"
-          fill="none"
-          stroke={midAccent}
-          strokeWidth="1.8"
-          strokeDasharray="4 4"
-          strokeLinecap="round"
-          opacity={baseOpacity + 0.02}
-        />
-
-        {/* 3.7 Dot Grid Matrix - Lower Right */}
-        <G opacity={baseOpacity - 0.06}>
+        {/* 4. Top-Right Subtle 3x3 Technical Dot Grid Matrix */}
+        <G opacity={subtleOpacity}>
           {[0, 1, 2].map((col) =>
             [0, 1, 2].map((row) => (
               <Circle
-                key={`mid-dot-${col}-${row}`}
-                cx={350 + col * 12}
-                cy={485 + row * 12}
-                r={1.6}
-                fill={midSubtle}
+                key={`top-dot-${col}-${row}`}
+                cx={356 + col * 10}
+                cy={130 + row * 10}
+                r={1.2}
+                fill={subtleColor}
               />
             ))
           )}
         </G>
 
         {/* ================================================================= */}
-        {/* SECTION 4: BOTTOM AREA (Y: 620 - 800)                             */}
+        {/* UPPER-MID REGION (Y: 200 - 400) - Peripheral Accents               */}
         {/* ================================================================= */}
 
-        {/* 4.1 Diploma / Certificate Scroll (Ijazah Vokasi) - Bottom Left */}
-        <G opacity={baseOpacity + 0.02}>
+        {/* 5. Minimalist Innovation Lightbulb - Upper Left Margin */}
+        <G opacity={secondaryOpacity}>
           <Path
-            d="M 18 640 L 48 625 L 54 637 L 24 652 Z"
+            d="M 18 248 C 12 243, 12 234, 18 229 C 24 224, 32 224, 38 229 C 44 234, 44 243, 38 248 C 35 251, 34 254, 33 257 L 23 257 C 22 254, 21 251, 18 248 Z"
             fill="none"
-            stroke={midPrimary}
-            strokeWidth="1.8"
+            stroke={secondaryColor}
+            strokeWidth="1.25"
+            strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {/* Screw base & filament */}
+          <Line x1={24} y1={260} x2={32} y2={260} stroke={secondaryColor} strokeWidth="1.2" strokeLinecap="round" />
+          <Line x1={26} y1={263} x2={30} y2={263} stroke={secondaryColor} strokeWidth="1.2" strokeLinecap="round" />
+          {/* Subtle glowing filament */}
+          <Path d="M 26 242 L 28 236 L 30 242" fill="none" stroke={accentColor} strokeWidth="1" strokeLinecap="round" />
+        </G>
+
+        {/* 6. Minimalist Open Book - Upper Right Margin */}
+        <G opacity={primaryOpacity}>
           <Path
-            d="M 18 640 C 15 642, 15 647, 18 650 C 21 653, 24 652, 24 652"
+            d="M 346 230 C 354 227, 362 229, 368 233 C 374 229, 382 227, 390 230 L 390 244 C 382 241, 374 243, 368 247 C 362 243, 354 241, 346 244 Z"
             fill="none"
-            stroke={midPrimary}
-            strokeWidth="1.8"
+            stroke={primaryColor}
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          <Path
-            d="M 48 625 C 45 627, 45 632, 48 635 C 51 638, 54 637, 54 637"
-            fill="none"
-            stroke={midPrimary}
-            strokeWidth="1.8"
-          />
-          <Line x1={33} y1={632} x2={38} y2={642} stroke={midAccent} strokeWidth="2.2" strokeLinecap="round" />
-          <Path d="M 38 642 L 35 649 M 38 642 L 42 648" stroke={midAccent} strokeWidth="1.5" strokeLinecap="round" />
+          {/* Book Spine */}
+          <Line x1={368} y1={233} x2={368} y2={247} stroke={primaryColor} strokeWidth="1.3" strokeLinecap="round" />
         </G>
 
-        {/* 4.2 Center-Bottom: Vocational Gear & Mechanical Spark */}
-        <G opacity={baseOpacity - 0.04}>
-          <Circle cx={200} cy={645} r={12} fill="none" stroke={midSecondary} strokeWidth="1.6" />
-          <Circle cx={200} cy={645} r={4} fill="none" stroke={midSecondary} strokeWidth="1.4" />
-          {/* Gear teeth */}
-          <Line x1={200} y1={630} x2={200} y2={633} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={200} y1={657} x2={200} y2={660} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={185} y1={645} x2={188} y2={645} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={212} y1={645} x2={215} y2={645} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-        </G>
-
-        {/* 4.3 Engineering Gear (Roda Gigi Teknik) - Bottom Right */}
-        <G opacity={baseOpacity}>
-          <Circle cx={360} cy={645} r={14} fill="none" stroke={midSecondary} strokeWidth="1.6" />
-          <Circle cx={360} cy={645} r={5} fill="none" stroke={midSecondary} strokeWidth="1.4" />
-          {/* Teeth */}
-          <Line x1={360} y1={628} x2={360} y2={632} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={360} y1={658} x2={360} y2={662} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={343} y1={645} x2={347} y2={645} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={373} y1={645} x2={377} y2={645} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={348} y1={633} x2={351} y2={636} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={369} y1={654} x2={372} y2={657} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={348} y1={657} x2={351} y2={654} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-          <Line x1={369} y1={636} x2={372} y2={633} stroke={midSecondary} strokeWidth="2.5" strokeLinecap="round" />
-        </G>
-
-        {/* 4.4 Swooshing Flight Trail - Bottom Left */}
+        {/* 7. Subtle Diamond Sparkle - Right Mid */}
         <Path
-          d="M 16 680 C 40 700, 20 735, 50 755 C 72 768, 105 760, 125 780"
-          fill="none"
-          stroke={midAccent}
-          strokeWidth="1.8"
-          strokeDasharray="4 5"
-          strokeLinecap="round"
-          opacity={baseOpacity}
+          d="M 372 320 C 372 324, 376 324, 376 324 C 376 324, 372 324, 372 328 C 372 324, 368 324, 368 324 C 368 324, 372 324, 372 320 Z"
+          fill={accentColor}
+          opacity={accentOpacity}
         />
 
-        {/* 4.5 Dot Grid Matrix - Bottom Left */}
-        <G opacity={baseOpacity - 0.08}>
+        {/* ================================================================= */}
+        {/* LOWER-MID REGION (Y: 420 - 620) - Breathing & Directional         */}
+        {/* ================================================================= */}
+
+        {/* 8. Vocational Set-Square Ruler - Lower Left Margin */}
+        <G opacity={secondaryOpacity}>
+          <Path
+            d="M 14 485 L 14 525 L 48 525 Z"
+            fill="none"
+            stroke={secondaryColor}
+            strokeWidth="1.3"
+            strokeLinejoin="round"
+          />
+          <Path d="M 20 500 L 20 519 L 36 519 Z" fill="none" stroke={secondaryColor} strokeWidth="1" />
+          <Line x1={14} y1={493} x2={17} y2={493} stroke={secondaryColor} strokeWidth="1.1" />
+          <Line x1={14} y1={503} x2={18} y2={503} stroke={secondaryColor} strokeWidth="1.1" />
+          <Line x1={14} y1={513} x2={17} y2={513} stroke={secondaryColor} strokeWidth="1.1" />
+          <Line x1={25} y1={525} x2={25} y2={522} stroke={secondaryColor} strokeWidth="1.1" />
+          <Line x1={35} y1={525} x2={35} y2={521} stroke={secondaryColor} strokeWidth="1.1" />
+        </G>
+
+        {/* 9. Minimalist Paper Airplane with Gentle Flight Contrail - Lower Right */}
+        <G opacity={primaryOpacity}>
+          <Path
+            d="M 345 500 L 384 485 L 366 524 L 358 510 Z"
+            fill="none"
+            stroke={primaryColor}
+            strokeWidth="1.3"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          <Path d="M 384 485 L 358 510" fill="none" stroke={primaryColor} strokeWidth="1.1" />
+          {/* Subtle curved contrail arc */}
+          <Path
+            d="M 305 530 C 322 528, 338 520, 348 508"
+            fill="none"
+            stroke={accentColor}
+            strokeWidth="1.2"
+            strokeDasharray="4 4"
+            strokeLinecap="round"
+            opacity={0.8}
+          />
+        </G>
+
+        {/* 10. Subtle 3x3 Dot Grid - Lower Left Accent */}
+        <G opacity={subtleOpacity}>
           {[0, 1, 2].map((col) =>
             [0, 1, 2].map((row) => (
               <Circle
                 key={`bot-dot-${col}-${row}`}
-                cx={18 + col * 12}
-                cy={575 + row * 12}
-                r={1.6}
-                fill={midSubtle}
+                cx={20 + col * 9}
+                cy={585 + row * 9}
+                r={1.2}
+                fill={subtleColor}
               />
             ))
           )}
         </G>
 
-        {/* 4.6 Math Symbols and Sparkles - Bottom */}
-        <G opacity={baseOpacity}>
-          <Line x1={355} y1={715} x2={365} y2={715} stroke={midSubtle} strokeWidth="1.6" strokeLinecap="round" />
-          <Line x1={360} y1={710} x2={360} y2={720} stroke={midSubtle} strokeWidth="1.6" strokeLinecap="round" />
+        {/* ================================================================= */}
+        {/* BOTTOM REGION (Y: 640 - 800) - Vocational Mastery Framing         */}
+        {/* ================================================================= */}
+
+        {/* 11. Diploma / Certificate Scroll (Ijazah Vokasi) - Bottom Left */}
+        <G opacity={primaryOpacity}>
+          <Path
+            d="M 18 695 L 44 682 L 49 692 L 23 705 Z"
+            fill="none"
+            stroke={primaryColor}
+            strokeWidth="1.3"
+            strokeLinejoin="round"
+          />
+          <Path
+            d="M 18 695 C 15 697, 15 701, 18 703 C 21 705, 23 705, 23 705"
+            fill="none"
+            stroke={primaryColor}
+            strokeWidth="1.3"
+          />
+          <Path
+            d="M 44 682 C 41 684, 41 688, 44 690 C 47 692, 49 692, 49 692"
+            fill="none"
+            stroke={primaryColor}
+            strokeWidth="1.3"
+          />
+          {/* Golden Ribbon Seal */}
+          <Line x1={31} y1={688} x2={35} y2={697} stroke={accentColor} strokeWidth="1.5" strokeLinecap="round" />
+          <Path d="M 35 697 L 33 703 M 35 697 L 38 702" stroke={accentColor} strokeWidth="1.2" strokeLinecap="round" />
         </G>
-        <G opacity={baseOpacity - 0.05}>
-          <Line x1={22} y1={725} x2={30} y2={733} stroke={midIndigo} strokeWidth="1.5" strokeLinecap="round" />
-          <Line x1={30} y1={725} x2={22} y2={733} stroke={midIndigo} strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* 12. Minimalist Precision Engineering Gear - Bottom Right */}
+        <G opacity={secondaryOpacity}>
+          {/* Central concentric rings */}
+          <Circle cx={362} cy={695} r={12} fill="none" stroke={secondaryColor} strokeWidth="1.25" />
+          <Circle cx={362} cy={695} r={4.5} fill="none" stroke={secondaryColor} strokeWidth="1.1" />
+          {/* Clean 4-point cardinal teeth */}
+          <Line x1={362} y1={680} x2={362} y2={683} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={362} y1={707} x2={362} y2={710} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={347} y1={695} x2={350} y2={695} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={374} y1={695} x2={377} y2={695} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          {/* Clean diagonal teeth */}
+          <Line x1={351} y1={684} x2={353} y2={686} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={371} y1={704} x2={373} y2={706} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={351} y1={706} x2={353} y2={704} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
+          <Line x1={371} y1={686} x2={373} y2={684} stroke={secondaryColor} strokeWidth="2" strokeLinecap="round" />
         </G>
+
+        {/* 13. Minimalist Sparkle Accents - Bottom */}
         <Path
-          d="M 330 740 C 330 746, 336 746, 336 746 C 336 746, 330 746, 330 752 C 330 746, 324 746, 324 746 C 324 746, 330 746, 330 740 Z"
-          fill={midAccent}
-          opacity={0.5}
+          d="M 334 745 C 334 748, 337 748, 337 748 C 337 748, 334 748, 334 751 C 334 748, 331 748, 331 748 C 331 748, 334 748, 334 745 Z"
+          fill={accentColor}
+          opacity={accentOpacity}
         />
         <Path
-          d="M 40 760 C 40 765, 45 765, 45 765 C 45 765, 40 765, 40 770 C 40 765, 35 765, 35 765 C 35 765, 40 765, 40 760 Z"
-          fill={midSecondary}
-          opacity={0.46}
+          d="M 45 750 C 45 753, 48 753, 48 753 C 48 753, 45 753, 45 756 C 45 753, 42 753, 42 753 C 42 753, 45 753, 45 750 Z"
+          fill={secondaryColor}
+          opacity={secondaryOpacity}
         />
       </Svg>
     </View>
