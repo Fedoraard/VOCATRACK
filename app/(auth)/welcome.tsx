@@ -42,7 +42,7 @@ export default function WelcomeScreen() {
 
           <View style={styles.jurusanRow}>
             {/* Left accent lines */}
-            <View style={styles.accentGroup}>
+            <View style={[styles.accentGroup, { alignItems: 'flex-end' }]}>
               <View style={[styles.accentLine, styles.accentLineTopLeft]} />
               <View style={[styles.accentLine, styles.accentLineBottomLeft]} />
             </View>
@@ -50,15 +50,17 @@ export default function WelcomeScreen() {
             <Text style={styles.jurusanText}>Jurusanmu</Text>
 
             {/* Right accent lines */}
-            <View style={styles.accentGroup}>
+            <View style={[styles.accentGroup, { alignItems: 'flex-start' }]}>
               <View style={[styles.accentLine, styles.accentLineTopRight]} />
               <View style={[styles.accentLine, styles.accentLineBottomRight]} />
             </View>
           </View>
 
           <Text style={styles.subtitle}>
-            VocaTrack membantu kamu memahami peluang karier, skill yang dibutuhkan,
-            dan langkah belajar berdasarkan jurusan yang kamu pilih.
+            VocaTrack membantu kamu memahami{'\n'}
+            peluang karier, skill yang dibutuhkan, dan{'\n'}
+            langkah belajar berdasarkan jurusan{'\n'}
+            yang kamu pilih.
           </Text>
         </View>
 
@@ -101,21 +103,21 @@ const styles = StyleSheet.create({
   },
   decorativeCircle: {
     position: 'absolute',
-    top: 135,
-    left: -115,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
+    top: height * 0.198,
+    left: -width * 0.216,
+    width: width * 0.32,
+    height: width * 0.32,
+    borderRadius: (width * 0.32) / 2,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.20)',
+    borderColor: 'rgba(255, 255, 255, 0.32)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   topSafeArea: {
     flex: 1,
-    justifyContent: 'space-between',
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 14,
+    paddingTop: 16,
     paddingBottom: 4,
   },
   logo: {
@@ -125,15 +127,15 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 50,
+    marginTop: Math.max(height * 0.115, 85),
     marginBottom: 8,
   },
   titleLine: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: -0.5,
-    lineHeight: 40,
+    lineHeight: 38,
     textAlign: 'center',
   },
   jurusanRow: {
@@ -145,54 +147,55 @@ const styles = StyleSheet.create({
   },
   accentGroup: {
     justifyContent: 'center',
-    gap: 4,
+    gap: 5,
   },
   accentLine: {
-    height: 2,
+    height: 2.2,
     backgroundColor: 'rgba(255, 255, 255, 0.75)',
-    borderRadius: 1,
+    borderRadius: 1.5,
   },
   accentLineTopLeft: {
-    width: 12,
-    transform: [{ rotate: '-14deg' }],
+    width: 15,
+    transform: [{ rotate: '22deg' }],
   },
   accentLineBottomLeft: {
-    width: 15,
-    transform: [{ rotate: '-14deg' }],
+    width: 13,
+    transform: [{ rotate: '0deg' }],
   },
   accentLineTopRight: {
-    width: 12,
-    transform: [{ rotate: '14deg' }],
+    width: 15,
+    transform: [{ rotate: '-22deg' }],
   },
   accentLineBottomRight: {
-    width: 15,
-    transform: [{ rotate: '14deg' }],
+    width: 13,
+    transform: [{ rotate: '0deg' }],
   },
   jurusanText: {
-    fontSize: 36,
+    fontSize: 34,
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   subtitle: {
     color: 'rgba(255, 255, 255, 0.94)',
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 12.5,
+    lineHeight: 18.5,
     textAlign: 'center',
-    marginTop: 12,
-    paddingHorizontal: 36,
+    marginTop: 14,
+    paddingHorizontal: 20,
     fontWeight: '500',
   },
   illustrationContainer: {
+    flex: 1,
     width: '100%',
-    height: width / 1.292,
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: -2,
+    overflow: 'hidden',
   },
   heroImage: {
-    width: width,
-    height: width / 1.292,
+    width: width * 1.05,
+    height: (width * 1.05) / 1.22,
   },
   whiteBottomSection: {
     backgroundColor: '#FFFFFF',
