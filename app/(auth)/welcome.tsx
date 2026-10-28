@@ -10,7 +10,7 @@ import {
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CloudHighlights } from '../../components/common/CloudHighlights';
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Stop, Rect } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,6 +71,23 @@ export default function WelcomeScreen() {
             style={styles.heroImage}
             resizeMode="cover"
           />
+          {/* Top smooth sky transition gradient */}
+          <Svg
+            width="100%"
+            height={45}
+            style={styles.topGradientFade}
+            pointerEvents="none"
+          >
+            <Defs>
+              <SvgLinearGradient id="skyFade" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="0%" stopColor="#3A93FD" stopOpacity={1} />
+                <Stop offset="35%" stopColor="#3A93FD" stopOpacity={0.85} />
+                <Stop offset="70%" stopColor="#3A93FD" stopOpacity={0.35} />
+                <Stop offset="100%" stopColor="#3A93FD" stopOpacity={0} />
+              </SvgLinearGradient>
+            </Defs>
+            <Rect x="0" y="0" width="100%" height={45} fill="url(#skyFade)" />
+          </Svg>
         </View>
       </SafeAreaView>
 
@@ -127,7 +144,7 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: Math.max(height * 0.115, 85),
+    marginTop: Math.max(height * 0.09, 68),
     marginBottom: 8,
   },
   titleLine: {
@@ -187,7 +204,7 @@ const styles = StyleSheet.create({
   },
   illustrationContainer: {
     width: '100%',
-    height: width * 0.55,
+    height: width * 0.65,
     overflow: 'hidden',
     position: 'relative',
     marginBottom: -2,
@@ -199,6 +216,13 @@ const styles = StyleSheet.create({
     left: 0,
     width: width,
     height: width / 1.292,
+  },
+  topGradientFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
   },
   whiteBottomSection: {
     backgroundColor: '#FFFFFF',
