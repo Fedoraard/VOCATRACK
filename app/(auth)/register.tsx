@@ -16,11 +16,12 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Stop, Rect } from 'react-native-svg';
 import { GoogleLogo } from '../../components/auth/GoogleLogo';
 import { CloudHighlights } from '../../components/common/CloudHighlights';
 import { useAuth } from '../../hooks/useAuth';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function RegisterScreen() {
   const insets = useSafeAreaInsets();
@@ -95,12 +96,34 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Top Hero: Students on Clouds */}
-          <View style={styles.heroSection}>
+          <View
+            style={[
+              styles.heroSection,
+              { height: Math.round(width / 1.292 + (insets.top || 24)) },
+            ]}
+          >
             <Image
               source={require('../../assets/hero_students.png')}
               style={styles.heroImage}
               resizeMode="cover"
             />
+            {/* Top smooth sky transition gradient */}
+            <Svg
+              width="100%"
+              height={45}
+              style={styles.topGradientFade}
+              pointerEvents="none"
+            >
+              <Defs>
+                <SvgLinearGradient id="registerSkyFade" x1="0" y1="0" x2="0" y2="1">
+                  <Stop offset="0%" stopColor="#3A93FD" stopOpacity={1} />
+                  <Stop offset="35%" stopColor="#3A93FD" stopOpacity={0.85} />
+                  <Stop offset="70%" stopColor="#3A93FD" stopOpacity={0.35} />
+                  <Stop offset="100%" stopColor="#3A93FD" stopOpacity={0} />
+                </SvgLinearGradient>
+              </Defs>
+              <Rect x="0" y="0" width="100%" height={45} fill="url(#registerSkyFade)" />
+            </Svg>
           </View>
 
           {/* Bottom Card: White Form Area (Clean White matching Image 3) */}
@@ -255,13 +278,23 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     width: '100%',
-    height: Math.min(height * 0.32, 260),
     backgroundColor: '#3A93FD',
     overflow: 'hidden',
+    position: 'relative',
   },
   heroImage: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
     width: '100%',
-    height: '100%',
+    height: width / 1.292,
+  },
+  topGradientFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
   },
   formCard: {
     backgroundColor: '#FFFFFF',
