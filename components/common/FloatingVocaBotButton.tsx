@@ -21,13 +21,13 @@ export const FloatingVocaBotButton: React.FC<FloatingVocaBotButtonProps> = ({
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={handlePress}
-      style={styles.container}
+      style={styles.circleButton}
       accessibilityLabel="Tanya VocaBot AI Assistant"
       accessibilityRole="button"
     >
       <Image
-        source={require('../../assets/center_bot_btn.png')}
-        style={styles.buttonImage}
+        source={require('../../assets/vocabot_head_white.png')}
+        style={styles.botIcon}
         resizeMode="contain"
       />
     </TouchableOpacity>
@@ -35,20 +35,21 @@ export const FloatingVocaBotButton: React.FC<FloatingVocaBotButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: 64,
-    height: 64,
+  circleButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#3480FF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2563EB',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
+    shadowColor: '#2B7BF6',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.38,
+    shadowRadius: 10,
     elevation: 8,
-    marginTop: -20,
   },
-  buttonImage: {
-    width: 64,
-    height: 64,
+  botIcon: {
+    width: 28,
+    height: 30,
   },
 });
