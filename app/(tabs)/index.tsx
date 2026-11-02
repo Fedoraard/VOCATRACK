@@ -56,7 +56,7 @@ export default function DashboardScreen() {
                 <Text style={styles.userMajor}>{displayMajor}</Text>
 
                 <Text style={styles.congratsText}>
-                  Selamat! Kamu Sudah Menyelesaikan
+                  Selamat! Kamu Sudah Menyelsaikan
                 </Text>
                 <View style={styles.materiCountRow}>
                   <Text style={styles.materiNumber}>25</Text>
@@ -76,18 +76,18 @@ export default function DashboardScreen() {
               />
             </View>
 
-            {/* Blue Progress Bar Container */}
+            {/* Blue Progress Bar Container (Generous & Prominent) */}
             <View style={styles.progressContainer}>
               <View style={styles.progressTextRow}>
                 <Text style={styles.progressLabel}>Progress Pembelajaran:</Text>
                 <Text style={styles.progressPercentage}>12%</Text>
               </View>
               <View style={styles.progressBarTrack}>
-                <View style={[styles.progressBarFill, { width: '12%' }]} />
+                <View style={[styles.progressBarFill, { width: '18%' }]} />
               </View>
             </View>
 
-            {/* Golden Orange Action Button */}
+            {/* Golden Orange Action Button (More compact than progress box) */}
             <TouchableOpacity
               style={styles.continueButton}
               activeOpacity={0.88}
@@ -147,7 +147,9 @@ const styles = StyleSheet.create({
   welcomeCard: {
     backgroundColor: '#EBF4FE',
     borderRadius: 24,
-    padding: 16,
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 16,
     marginBottom: 14,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.65)',
@@ -168,35 +170,37 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   greetingTitle: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: '800',
     color: '#0F172A',
+    letterSpacing: -0.3,
   },
   userNameHighlight: {
     color: '#2B7BF6',
   },
   userMajor: {
-    fontSize: 12.5,
-    fontWeight: '700',
+    fontSize: 13.5,
+    fontWeight: '800',
     color: '#2B7BF6',
-    marginTop: 2,
-    marginBottom: 8,
+    marginTop: 3,
+    marginBottom: 10,
   },
   congratsText: {
-    fontSize: 11.5,
+    fontSize: 12.5,
     color: '#475569',
     fontWeight: '500',
+    marginBottom: 4,
   },
   materiCountRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginTop: 2,
-    gap: 4,
+    gap: 5,
   },
   materiNumber: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: '900',
     color: '#0F172A',
+    lineHeight: 40,
   },
   materiLabel: {
     fontSize: 18,
@@ -204,61 +208,61 @@ const styles = StyleSheet.create({
     color: '#0F172A',
   },
   avatarPhoto: {
-    width: 82,
-    height: 82,
+    width: 88,
+    height: 88,
     borderRadius: 18,
   },
   progressContainer: {
     backgroundColor: '#2575FC',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 14,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 10,
   },
   progressTextRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   progressLabel: {
     color: '#FFFFFF',
-    fontSize: 11.5,
-    fontWeight: '600',
+    fontSize: 12.5,
+    fontWeight: '700',
   },
   progressPercentage: {
     color: '#FFFFFF',
-    fontSize: 11.5,
+    fontSize: 12.5,
     fontWeight: '800',
   },
   progressBarTrack: {
-    height: 7,
+    height: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.22)',
-    borderRadius: 3.5,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 3.5,
+    borderRadius: 4,
   },
   continueButton: {
     backgroundColor: '#F39200',
-    borderRadius: 16,
-    height: 48,
+    borderRadius: 20,
+    height: 38,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#F39200',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 3,
   },
   continueButtonText: {
     color: '#FFFFFF',
-    fontSize: 14.5,
-    fontWeight: '800',
-    letterSpacing: 0.3,
+    fontSize: 12.5,
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
   recommendationCard: {
     backgroundColor: '#EBF4FE',
