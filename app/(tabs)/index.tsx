@@ -147,9 +147,7 @@ const styles = StyleSheet.create({
   welcomeCard: {
     backgroundColor: '#EBF4FE',
     borderRadius: 24,
-    paddingHorizontal: 18,
-    paddingTop: 18,
-    paddingBottom: 16,
+    padding: 16,
     marginBottom: 14,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.65)',
@@ -162,15 +160,15 @@ const styles = StyleSheet.create({
   welcomeHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginBottom: 10,
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
   welcomeTextCol: {
     flex: 1,
-    paddingRight: 10,
+    paddingRight: 12,
   },
   greetingTitle: {
-    fontSize: 21,
+    fontSize: 20,
     fontWeight: '800',
     color: '#0F172A',
     letterSpacing: -0.3,
@@ -179,14 +177,14 @@ const styles = StyleSheet.create({
     color: '#2B7BF6',
   },
   userMajor: {
-    fontSize: 13.5,
+    fontSize: 13,
     fontWeight: '800',
     color: '#2B7BF6',
-    marginTop: 3,
-    marginBottom: 10,
+    marginTop: 2,
+    marginBottom: 8,
   },
   congratsText: {
-    fontSize: 12.5,
+    fontSize: 12,
     color: '#475569',
     fontWeight: '500',
     marginBottom: 4,
@@ -194,13 +192,13 @@ const styles = StyleSheet.create({
   materiCountRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: 5,
+    gap: 4,
   },
   materiNumber: {
-    fontSize: 36,
+    fontSize: 34,
     fontWeight: '900',
     color: '#0F172A',
-    lineHeight: 40,
+    lineHeight: 38,
   },
   materiLabel: {
     fontSize: 18,
@@ -208,10 +206,9 @@ const styles = StyleSheet.create({
     color: '#0F172A',
   },
   avatarPhoto: {
-    width: 98,
-    height: 98,
+    width: 94,
+    height: 94,
     borderRadius: 20,
-    marginBottom: 0,
   },
   progressContainer: {
     backgroundColor: '#2575FC',
