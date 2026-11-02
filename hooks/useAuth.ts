@@ -123,6 +123,39 @@ export function useAuth() {
     [setUser]
   );
 
+  // Reset Password via Email
+  const resetPassword = useCallback(
+    async (email: string) => {
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const cleanEmail = email.trim();
+        if (!cleanEmail || !cleanEmail.includes('@')) {
+          throw new Error('Masukkan alamat email yang valid.');
+        }
+
+        if (isSupabaseConfigured) {
+          const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail);
+          if (error) {
+            throw error;
+          }
+          return true;
+        } else {
+          // Mock reset password simulator
+          await new Promise((res) => setTimeout(res, 800));
+          return true;
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Gagal mengirim instruksi pemulihan kata sandi.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
   // Login via Native Biometrics (Fingerprint / FaceID)
   const loginWithBiometrics = useCallback(async () => {
     try {
@@ -201,6 +234,7 @@ export function useAuth() {
     errorMessage,
     login,
     register,
+    resetPassword,
     updateProfile,
     loginWithBiometrics,
     logout,
