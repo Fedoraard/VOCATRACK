@@ -123,8 +123,8 @@ export function useAuth() {
     [setUser]
   );
 
-  // Reset Password via Email
-  const resetPassword = useCallback(
+  // Send OTP Verification Code to Email
+  const sendOtpCode = useCallback(
     async (email: string) => {
       setLoading(true);
       setErrorMessage(null);
@@ -136,24 +136,117 @@ export function useAuth() {
         }
 
         if (isSupabaseConfigured) {
-          const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail);
+          // Attempt OTP via Supabase
+          const { error } = await supabase.auth.signInWithOtp({
+            email: cleanEmail,
+            options: { shouldCreateUser: false },
+          });
           if (error) {
-            throw error;
+            // Fallback to reset password OTP if sign-in with OTP has specific constraints
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(cleanEmail);
+            if (resetError) throw resetError;
           }
           return true;
         } else {
-          // Mock reset password simulator
-          await new Promise((res) => setTimeout(res, 800));
+          // Mock OTP simulator
+          await new Promise((res) => setTimeout(res, 700));
           return true;
         }
       } catch (err: any) {
-        setErrorMessage(err.message || 'Gagal mengirim instruksi pemulihan kata sandi.');
+        setErrorMessage(err.message || 'Gagal mengirim kode verifikasi. Periksa kembali email Anda.');
         return false;
       } finally {
         setLoading(false);
       }
     },
     []
+  );
+
+  // Verify OTP Code
+  const verifyOtpCode = useCallback(
+    async (email: string, code: string) => {
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const cleanCode = code.trim();
+        if (cleanCode.length < 4) {
+          throw new Error('Masukkan kode verifikasi lengkap.');
+        }
+
+        if (isSupabaseConfigured) {
+          const { error } = await supabase.auth.verifyOtp({
+            email: email.trim(),
+            token: cleanCode,
+            type: 'recovery',
+          });
+          if (error) {
+            // Also try email type
+            const { error: emailOtpError } = await supabase.auth.verifyOtp({
+              email: email.trim(),
+              token: cleanCode,
+              type: 'email',
+            });
+            if (emailOtpError) throw emailOtpError;
+          }
+          return true;
+        } else {
+          // Mock verification simulator
+          await new Promise((res) => setTimeout(res, 600));
+          // Accept any 4-6 digit code in mock mode, or 123456
+          if (cleanCode === '000000' || cleanCode === '0000') {
+            throw new Error('Kode verifikasi salah atau kedaluwarsa.');
+          }
+          return true;
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Kode verifikasi tidak valid atau telah kedaluwarsa.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // Set / Update Password after verification
+  const updatePassword = useCallback(
+    async (newPassword: string) => {
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!newPassword || newPassword.length < 6) {
+          throw new Error('Kata sandi baru minimal 6 karakter.');
+        }
+
+        if (isSupabaseConfigured) {
+          const { error } = await supabase.auth.updateUser({
+            password: newPassword,
+          });
+          if (error) throw error;
+          return true;
+        } else {
+          // Mock password update
+          await new Promise((res) => setTimeout(res, 600));
+          return true;
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Gagal memperbarui kata sandi baru.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // Reset Password via Email (backward compatibility)
+  const resetPassword = useCallback(
+    async (email: string) => {
+      return sendOtpCode(email);
+    },
+    [sendOtpCode]
   );
 
   // Login via Native Biometrics (Fingerprint / FaceID)
@@ -234,6 +327,9 @@ export function useAuth() {
     errorMessage,
     login,
     register,
+    sendOtpCode,
+    verifyOtpCode,
+    updatePassword,
     resetPassword,
     updateProfile,
     loginWithBiometrics,
