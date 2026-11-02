@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
   welcomeHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 14,
+    alignItems: 'flex-end',
+    marginBottom: 10,
   },
   welcomeTextCol: {
     flex: 1,
@@ -208,9 +208,10 @@ const styles = StyleSheet.create({
     color: '#0F172A',
   },
   avatarPhoto: {
-    width: 88,
-    height: 88,
-    borderRadius: 18,
+    width: 98,
+    height: 98,
+    borderRadius: 20,
+    marginBottom: 0,
   },
   progressContainer: {
     backgroundColor: '#2575FC',
