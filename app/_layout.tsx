@@ -18,9 +18,9 @@ export default function RootLayout() {
         setUser({
           id: session.user.id,
           email: session.user.email || 'dipagntg12@gmail.com',
-          namaLengkap: session.user.user_metadata?.full_name || 'DIVA WAHYU',
+          namaLengkap: session.user.user_metadata?.full_name || 'Galuh',
           asalSekolah: session.user.user_metadata?.school || 'SMK Binaan VocaTrack',
-          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Komputer Jaringan',
+          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Instalasi Tenaga Listrik',
           fotoProfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.foto_profil,
           totalXp: 0,
           level: 1,
@@ -35,9 +35,9 @@ export default function RootLayout() {
         setUser({
           id: session.user.id,
           email: session.user.email || 'dipagntg12@gmail.com',
-          namaLengkap: session.user.user_metadata?.full_name || 'DIVA WAHYU',
+          namaLengkap: session.user.user_metadata?.full_name || 'Galuh',
           asalSekolah: session.user.user_metadata?.school || 'SMK Binaan VocaTrack',
-          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Komputer Jaringan',
+          jurusanDiminati: session.user.user_metadata?.major || 'Teknik Instalasi Tenaga Listrik',
           fotoProfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.foto_profil,
           totalXp: 0,
           level: 1,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import Svg, {
   Path,
@@ -11,47 +11,34 @@ import Svg, {
 import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
-const CHART_WIDTH = width - 64; // accounting for card & page paddings
-const CHART_HEIGHT = 120;
+const CHART_HEIGHT = 125;
 
 export const ExerciseGraphCard: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
-  if (!hasData) {
-    return (
-      <View style={styles.card}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>Grafik Latihan Soal Kamu</Text>
-        </View>
-        <View style={styles.emptyContainer}>
-          <View style={styles.emptyIconCircle}>
-            <Ionicons name="stats-chart-outline" size={28} color="#94A3B8" />
-          </View>
-          <Text style={styles.emptyTitle}>Belum Ada Riwayat Latihan</Text>
-          <Text style={styles.emptySubtitle}>
-            Selesaikan materi dan kuis pertamamu untuk melihat grafik perkembangan kompetensi di sini!
-          </Text>
-        </View>
-      </View>
-    );
-  }
+  const [chartWidth, setChartWidth] = useState(width - 110);
 
-  // Chart dimensions & point coordinates (normalized to CHART_WIDTH x CHART_HEIGHT)
-  // X coordinates spaced across 5 points
-  const p1 = { x: 20, y: 95 };
-  const p2 = { x: CHART_WIDTH * 0.28, y: 88 };
-  const p3 = { x: CHART_WIDTH * 0.52, y: 64 };
-  const p4 = { x: CHART_WIDTH * 0.74, y: 55 };
-  const p5 = { x: CHART_WIDTH - 20, y: 18 };
+  // Exact coordinates matching Figma reference image S-curve:
+  // Gridlines are at Y = 16 (for 60), Y = 56 (for 40), Y = 96 (for 20)
+  // Point 1 (X=100): Y is below 20 gridline (~108)
+  // Point 2 (X=280): Y is just below 20 gridline (~98)
+  // Point 3 (X=1200): Y is between 20 and 40 (~72)
+  // Point 4 (X=250): Y is below 40 (~62)
+  // Point 5 (X=1300): Y is at top line 60 (~16)
+  const p1 = { x: 18, y: 108 };
+  const p2 = { x: chartWidth * 0.28, y: 98 };
+  const p3 = { x: chartWidth * 0.52, y: 72 };
+  const p4 = { x: chartWidth * 0.74, y: 62 };
+  const p5 = { x: chartWidth - 18, y: 16 };
 
-  // Smooth cubic Bezier curves connecting the points
+  // Smooth Bezier curves exactly matching Figma reference
   const pathD = `
     M ${p1.x} ${p1.y}
-    C ${p1.x + 25} ${p1.y - 12}, ${p2.x - 25} ${p2.y + 12}, ${p2.x} ${p2.y}
-    C ${p2.x + 25} ${p2.y - 8}, ${p3.x - 25} ${p3.y + 8}, ${p3.x} ${p3.y}
-    C ${p3.x + 25} ${p3.y - 6}, ${p4.x - 25} ${p4.y + 6}, ${p4.x} ${p4.y}
-    C ${p4.x + 25} ${p4.y - 18}, ${p5.x - 25} ${p5.y + 18}, ${p5.x} ${p5.y}
+    C ${p1.x + 22} ${p1.y - 12}, ${p2.x - 22} ${p2.y + 4}, ${p2.x} ${p2.y}
+    C ${p2.x + 26} ${p2.y - 8}, ${p3.x - 26} ${p3.y + 12}, ${p3.x} ${p3.y}
+    C ${p3.x + 24} ${p3.y - 6}, ${p4.x - 24} ${p4.y + 6}, ${p4.x} ${p4.y}
+    C ${p4.x + 26} ${p4.y - 18}, ${p5.x - 26} ${p5.y + 18}, ${p5.x} ${p5.y}
   `;
 
-  // Area path for gradient fill
+  // Area fill under curve
   const areaD = `
     ${pathD}
     L ${p5.x} ${CHART_HEIGHT}
@@ -61,7 +48,7 @@ export const ExerciseGraphCard: React.FC<{ hasData?: boolean }> = ({ hasData = t
 
   return (
     <View style={styles.card}>
-      {/* Header */}
+      {/* Header Row on Soft Blue Card */}
       <View style={styles.headerRow}>
         <Text style={styles.title}>Grafik Latihan Soal Kamu</Text>
         <View style={styles.filterPill}>
@@ -70,84 +57,95 @@ export const ExerciseGraphCard: React.FC<{ hasData?: boolean }> = ({ hasData = t
         </View>
       </View>
 
-      {/* Chart Canvas */}
-      <View style={styles.chartWrapper}>
-        {/* Y Axis Labels */}
-        <View style={styles.yAxis}>
-          <Text style={styles.axisLabel}>60</Text>
-          <Text style={styles.axisLabel}>40</Text>
-          <Text style={styles.axisLabel}>20</Text>
-        </View>
+      {/* Crisp White Inner Chart Container */}
+      <View style={styles.chartWhiteCard}>
+        <View style={styles.chartWrapper}>
+          {/* Y Axis Labels accurately aligned with gridlines */}
+          <View style={styles.yAxis}>
+            <Text style={[styles.yAxisLabel, { top: 7 }]}>60</Text>
+            <Text style={[styles.yAxisLabel, { top: 47 }]}>40</Text>
+            <Text style={[styles.yAxisLabel, { top: 87 }]}>20</Text>
+          </View>
 
-        {/* SVG Drawing */}
-        <View style={styles.svgContainer}>
-          <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
-            <Defs>
-              <LinearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0%" stopColor="#2B7BF6" stopOpacity="0.25" />
-                <Stop offset="100%" stopColor="#2B7BF6" stopOpacity="0.0" />
-              </LinearGradient>
-            </Defs>
+          {/* SVG Drawing Canvas */}
+          <View
+            style={styles.svgContainer}
+            onLayout={(e) => {
+              const layoutWidth = e.nativeEvent.layout.width;
+              if (layoutWidth > 0 && Math.abs(layoutWidth - chartWidth) > 2) {
+                setChartWidth(layoutWidth);
+              }
+            }}
+          >
+            <Svg width={chartWidth} height={CHART_HEIGHT}>
+              <Defs>
+                <LinearGradient id="blueAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <Stop offset="0%" stopColor="#3A93FD" stopOpacity={0.35} />
+                  <Stop offset="100%" stopColor="#3A93FD" stopOpacity={0.02} />
+                </LinearGradient>
+              </Defs>
 
-            {/* Horizontal Gridlines */}
-            <Line
-              x1="0"
-              y1="25"
-              x2={CHART_WIDTH}
-              y2="25"
-              stroke="#F1F5F9"
-              strokeWidth="1"
-            />
-            <Line
-              x1="0"
-              y1="60"
-              x2={CHART_WIDTH}
-              y2="60"
-              stroke="#F1F5F9"
-              strokeWidth="1"
-            />
-            <Line
-              x1="0"
-              y1="95"
-              x2={CHART_WIDTH}
-              y2="95"
-              stroke="#F1F5F9"
-              strokeWidth="1"
-            />
-
-            {/* Gradient Fill under Curve */}
-            <Path d={areaD} fill="url(#blueGradient)" />
-
-            {/* Main Smooth Line */}
-            <Path
-              d={pathD}
-              fill="none"
-              stroke="#2B7BF6"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-            />
-
-            {/* Blue Node Dots */}
-            {[p1, p2, p3, p4, p5].map((pt, idx) => (
-              <Circle
-                key={idx}
-                cx={pt.x}
-                cy={pt.y}
-                r={5.5}
-                fill="#2B7BF6"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
+              {/* Faint Horizontal Gridlines aligned with Y=60, Y=40, Y=20 */}
+              <Line
+                x1="0"
+                y1="16"
+                x2={chartWidth}
+                y2="16"
+                stroke="#F1F5F9"
+                strokeWidth="1"
               />
-            ))}
-          </Svg>
+              <Line
+                x1="0"
+                y1="56"
+                x2={chartWidth}
+                y2="56"
+                stroke="#F1F5F9"
+                strokeWidth="1"
+              />
+              <Line
+                x1="0"
+                y1="96"
+                x2={chartWidth}
+                y2="96"
+                stroke="#F1F5F9"
+                strokeWidth="1"
+              />
 
-          {/* X Axis Labels */}
-          <View style={styles.xAxisRow}>
-            <Text style={styles.axisLabel}>100</Text>
-            <Text style={styles.axisLabel}>280</Text>
-            <Text style={styles.axisLabel}>1200</Text>
-            <Text style={styles.axisLabel}>250</Text>
-            <Text style={styles.axisLabel}>1300</Text>
+              {/* Gradient Fill under Curve */}
+              <Path d={areaD} fill="url(#blueAreaGrad)" />
+
+              {/* Main Smooth Curve Line */}
+              <Path
+                d={pathD}
+                fill="none"
+                stroke="#2B7BF6"
+                strokeWidth="3.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Blue Node Dots with White Outline */}
+              {[p1, p2, p3, p4, p5].map((pt, idx) => (
+                <Circle
+                  key={idx}
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={5.5}
+                  fill="#2B7BF6"
+                  stroke="#FFFFFF"
+                  strokeWidth={1.8}
+                />
+              ))}
+            </Svg>
+
+            {/* X Axis Labels aligned under points */}
+            <View style={styles.xAxisRow}>
+              <Text style={styles.axisLabel}>100</Text>
+              <Text style={styles.axisLabel}>280</Text>
+              <Text style={styles.axisLabel}>1200</Text>
+              <Text style={styles.axisLabel}>250</Text>
+              <Text style={styles.axisLabel}>1300</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -157,15 +155,17 @@ export const ExerciseGraphCard: React.FC<{ hasData?: boolean }> = ({ hasData = t
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    backgroundColor: '#EBF4FE',
+    borderRadius: 24,
     padding: 16,
-    marginTop: 14,
-    shadowColor: '#0F172A',
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.65)',
+    shadowColor: '#2B7BF6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowRadius: 10,
-    elevation: 2,
+    elevation: 3,
   },
   headerRow: {
     flexDirection: 'row',
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
-    fontSize: 15,
+    fontSize: 15.5,
     fontWeight: '800',
     color: '#0F172A',
   },
@@ -183,26 +183,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#BFDBFE',
-    backgroundColor: '#EFF6FF',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10,
+    paddingVertical: 3.5,
     borderRadius: 12,
-    gap: 2,
+    gap: 3,
   },
   filterText: {
     fontSize: 11,
     fontWeight: '700',
     color: '#2B7BF6',
   },
+  chartWhiteCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 1,
+  },
   chartWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   yAxis: {
+    width: 24,
     height: CHART_HEIGHT,
-    justifyContent: 'space-between',
-    paddingRight: 6,
-    paddingVertical: 10,
+    position: 'relative',
+    marginRight: 6,
   },
   svgContainer: {
     flex: 1,
@@ -210,38 +221,18 @@ const styles = StyleSheet.create({
   xAxisRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginTop: 6,
+    paddingHorizontal: 6,
+    marginTop: 8,
+  },
+  yAxisLabel: {
+    position: 'absolute',
+    fontSize: 10.5,
+    color: '#94A3B8',
+    fontWeight: '500',
   },
   axisLabel: {
-    fontSize: 10,
+    fontSize: 10.5,
     color: '#94A3B8',
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-  },
-  emptyIconCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: '#F1F5F9',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  emptyTitle: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#334155',
-    marginBottom: 4,
-  },
-  emptySubtitle: {
-    fontSize: 12,
-    color: '#64748B',
-    textAlign: 'center',
-    lineHeight: 18,
+    fontWeight: '500',
   },
 });

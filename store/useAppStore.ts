@@ -23,9 +23,9 @@ interface AppState {
 const DEFAULT_USER: UserProfile = {
   id: 'user-001',
   email: 'dipagntg12@gmail.com',
-  namaLengkap: 'DIVA WAHYU',
+  namaLengkap: 'Galuh',
   asalSekolah: 'SMK Binaan VocaTrack',
-  jurusanDiminati: 'Teknik Komputer Jaringan',
+  jurusanDiminati: 'Teknik Instalasi Tenaga Listrik',
   totalXp: 0,
   level: 1,
 };
