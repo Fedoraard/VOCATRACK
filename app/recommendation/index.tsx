@@ -73,7 +73,7 @@ export default function RecommendationScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleCol}>
-          <Text style={styles.headerSubtitle}>Model Rekomendasi SAW</Text>
+          <Text style={styles.headerSubtitle}>Model Rekomendasi SAW (F-09)</Text>
           <Text style={styles.headerTitle}>Rekomendasi 3 Profesi RPL</Text>
         </View>
       </View>

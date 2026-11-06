@@ -141,7 +141,7 @@ export default function JurusanScreen() {
           <View style={styles.modeSectionCard}>
             <View style={styles.modeSectionHeader}>
               <Ionicons name="options-outline" size={18} color="#2B7BF6" />
-              <Text style={styles.modeSectionTitle}>Mode Pembelajaran Siswa</Text>
+              <Text style={styles.modeSectionTitle}>Mode Pembelajaran Siswa (F-03)</Text>
             </View>
 
             <View style={styles.modeToggleGroup}>
@@ -254,7 +254,7 @@ export default function JurusanScreen() {
             >
               <Ionicons name="construct-outline" size={20} color="#2B7BF6" />
               <View style={{ flex: 1 }}>
-                <Text style={styles.shortcutTitle}>Proyek Siswa</Text>
+                <Text style={styles.shortcutTitle}>Proyek Siswa (T-67)</Text>
                 <Text style={styles.shortcutSub}>Brief & Pengumpulan</Text>
               </View>
               <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
@@ -267,7 +267,7 @@ export default function JurusanScreen() {
             >
               <Ionicons name="clipboard-outline" size={20} color="#059669" />
               <View style={{ flex: 1 }}>
-                <Text style={styles.shortcutTitle}>Layar Reviewer</Text>
+                <Text style={styles.shortcutTitle}>Layar Reviewer (T-70)</Text>
                 <Text style={styles.shortcutSub}>Penilaian Rubrik Internal</Text>
               </View>
               <Ionicons name="chevron-forward" size={16} color="#94A3B8" />

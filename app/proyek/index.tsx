@@ -124,7 +124,7 @@ export default function ProjectSubmissionScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleCol}>
-          <Text style={styles.headerSubtitle}>Tugas Belajar Siswa</Text>
+          <Text style={styles.headerSubtitle}>Tugas Belajar Siswa (T-67)</Text>
           <Text style={styles.headerTitle}>Proyek Akhir {brief.careerTitle}</Text>
         </View>
       </View>
@@ -195,7 +195,7 @@ export default function ProjectSubmissionScreen() {
           <Text style={styles.briefTitle}>Spesifikasi Tugas Belajar</Text>
           <Text style={styles.briefStack}>Tech Stack: {brief.technologyStack}</Text>
 
-          <Text style={styles.featuresHeader}>Fitur Utama Wajib:</Text>
+          <Text style={styles.featuresHeader}>Fitur Utama Wajib (D-29):</Text>
           <View style={styles.featuresList}>
             {brief.coreFeatures.map((feat, fIdx) => (
               <View key={fIdx} style={styles.featureItem}>
