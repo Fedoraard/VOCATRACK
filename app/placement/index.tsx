@@ -196,7 +196,7 @@ export default function PlacementScreen() {
       >
         <View style={styles.indicatorBadgeRow}>
           <View style={styles.indicatorPill}>
-            <Text style={styles.indicatorPillText}>{currentIndicator.id}</Text>
+            <Text style={styles.indicatorPillText}>Indikator #{currentIndex + 1}</Text>
           </View>
           <Text style={styles.indicatorModuleText}>{currentIndicator.moduleTitle}</Text>
         </View>

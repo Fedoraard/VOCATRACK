@@ -115,7 +115,7 @@ export default function ReviewerScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleCol}>
-          <Text style={styles.headerSubtitle}>Antarmuka Internal Penilai (T-70)</Text>
+          <Text style={styles.headerSubtitle}>Antarmuka Penilai Proyek</Text>
           <Text style={styles.headerTitle}>Layar Reviewer Internal</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={loadSubmissions}>
@@ -222,7 +222,7 @@ export default function ReviewerScreen() {
           <View style={[styles.modalBox, { maxHeight: '90%' }]}>
             <View style={styles.modalHeader}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.modalTitle}>Rubrik Evaluasi Proyek (CT-12)</Text>
+                <Text style={styles.modalTitle}>Rubrik Evaluasi Proyek</Text>
                 <Text style={styles.modalSub}>{selectedSub?.studentName} - {selectedSub?.careerId}</Text>
               </View>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
