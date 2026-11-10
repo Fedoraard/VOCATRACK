@@ -141,7 +141,7 @@ export default function JurusanScreen() {
           <View style={styles.modeSectionCard}>
             <View style={styles.modeSectionHeader}>
               <Ionicons name="options-outline" size={18} color="#2B7BF6" />
-              <Text style={styles.modeSectionTitle}>Mode Pembelajaran Siswa (F-03)</Text>
+              <Text style={styles.modeSectionTitle}>Mode Pembelajaran Siswa</Text>
             </View>
 
             <View style={styles.modeToggleGroup}>

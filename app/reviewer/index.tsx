@@ -115,7 +115,7 @@ export default function ReviewerScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleCol}>
-          <Text style={styles.headerSubtitle}>Antarmuka Penilai Proyek</Text>
+          <Text style={styles.headerSubtitle}>Antarmuka Internal Penilai</Text>
           <Text style={styles.headerTitle}>Layar Reviewer Internal</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={loadSubmissions}>
