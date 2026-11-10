@@ -124,7 +124,7 @@ export default function ProjectSubmissionScreen() {
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleCol}>
-          <Text style={styles.headerSubtitle}>Tugas Belajar Siswa (T-67)</Text>
+          <Text style={styles.headerSubtitle}>Tugas Belajar Siswa</Text>
           <Text style={styles.headerTitle}>Proyek Akhir {brief.careerTitle}</Text>
         </View>
       </View>
