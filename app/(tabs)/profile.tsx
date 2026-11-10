@@ -29,21 +29,32 @@ const PRESET_AVATARS = [
 
 export default function ProfileScreen() {
   const { user, logout, updateProfile } = useAuth();
-  const displayName = user?.namaLengkap || 'Siswa Vokasi';
-  const displayEmail = user?.email || '-';
-  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Rekayasa Perangkat Lunak';
+  const displayName = user?.namaLengkap?.trim() || 'Siswa Vokasi';
+  const displayEmail = user?.email?.trim() || '-';
+  const displayMajor = user?.jurusanDiminati?.trim() || 'Belum memilih jurusan';
+
+  // Hitung progres kelengkapan profil secara dinamis (5 indikator)
+  const profileSteps = [
+    Boolean(user?.namaLengkap?.trim() && user.namaLengkap !== 'Siswa Vokasi'),
+    Boolean(user?.email?.trim()),
+    Boolean(user?.asalSekolah?.trim()),
+    Boolean(user?.jurusanDiminati?.trim()),
+    Boolean(user?.fotoProfil?.trim()),
+  ];
+  const completedStepsCount = profileSteps.filter(Boolean).length;
+  const progressPercent = Math.round((completedStepsCount / 5) * 100);
 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [formName, setFormName] = useState(displayName);
-  const [formSchool, setFormSchool] = useState(user?.asalSekolah || 'SMK Binaan VocaTrack');
-  const [formMajor, setFormMajor] = useState(displayMajor);
+  const [formName, setFormName] = useState(user?.namaLengkap || '');
+  const [formSchool, setFormSchool] = useState(user?.asalSekolah || '');
+  const [formMajor, setFormMajor] = useState(user?.jurusanDiminati || '');
   const [formPhoto, setFormPhoto] = useState(user?.fotoProfil || '');
   const [saving, setSaving] = useState(false);
 
   const openEditModal = () => {
-    setFormName(user?.namaLengkap || displayName);
-    setFormSchool(user?.asalSekolah || 'SMK Binaan VocaTrack');
-    setFormMajor(user?.jurusanDiminati || displayMajor);
+    setFormName(user?.namaLengkap || '');
+    setFormSchool(user?.asalSekolah || '');
+    setFormMajor(user?.jurusanDiminati || '');
     setFormPhoto(user?.fotoProfil || '');
     setIsEditModalVisible(true);
   };
@@ -165,14 +176,16 @@ export default function ProfileScreen() {
             <View style={styles.completeProfileHeader}>
               <Text style={styles.completeProfileTitle}>Lengkapi Profilmu</Text>
               <View style={styles.completeProfileRight}>
-                <Text style={styles.completeProfileFraction}>3 dari 5 selesai</Text>
+                <Text style={styles.completeProfileFraction}>
+                  {completedStepsCount} dari 5 selesai
+                </Text>
                 <Ionicons name="chevron-forward" size={14} color="#94A3B8" />
               </View>
             </View>
 
             {/* Progress Bar */}
             <View style={styles.progressTrack}>
-              <View style={styles.progressFill} />
+              <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
             </View>
           </TouchableOpacity>
 

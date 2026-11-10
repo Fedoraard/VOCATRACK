@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,30 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Stop, Rect } from 'react-native-svg';
+import { Ionicons } from '@expo/vector-icons';
 import { ExerciseGraphCard } from '../../components/dashboard/ExerciseGraphCard';
 import { useAppStore } from '../../store/useAppStore';
+import { ProgressService } from '../../services/api/progressService';
+import { ProgressProjection } from '../../types/contracts';
 
 export default function DashboardScreen() {
   const user = useAppStore((state) => state.user);
+  const [progress, setProgress] = useState<ProgressProjection | null>(null);
 
-  const displayName = user?.namaLengkap || 'Siswa Vokasi';
-  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Rekayasa Perangkat Lunak';
+  useEffect(() => {
+    if (user?.id) {
+      ProgressService.getProgress(user.id).then(setProgress).catch(() => {});
+    }
+  }, [user?.id]);
+
+  const displayName = user?.namaLengkap?.trim() || 'Siswa Vokasi';
+  const displayMajor = user?.jurusanDiminati?.trim() || 'Belum memilih jurusan';
+
+  // Hitung jumlah materi yang sudah selesai dari progress nyata
+  const modulesList = Object.values(progress?.modules || {});
+  const completedCount = modulesList.filter((m) => m.hasPassedHistorically || m.isReadCompleted).length;
+  const totalModules = modulesList.length || 9;
+  const progressPercent = Math.round((completedCount / totalModules) * 100);
 
   return (
     <View style={styles.container}>
@@ -51,11 +67,15 @@ export default function DashboardScreen() {
                 <Text style={styles.userMajor}>{displayMajor}</Text>
 
                 <Text style={styles.congratsText}>
-                  Selamat! Kamu Sudah Menyelsaikan
+                  {completedCount === 0
+                    ? 'Mulai Petualangan Belajar Vokasi'
+                    : 'Selamat! Kamu Sudah Menyelesaikan'}
                 </Text>
                 <View style={styles.materiCountRow}>
-                  <Text style={styles.materiNumber}>25</Text>
-                  <Text style={styles.materiLabel}>Materi</Text>
+                  <Text style={styles.materiNumber}>{completedCount}</Text>
+                  <Text style={styles.materiLabel}>
+                    {completedCount === 0 ? 'Materi Selesai' : 'Materi'}
+                  </Text>
                 </View>
               </View>
 
@@ -75,10 +95,10 @@ export default function DashboardScreen() {
             <View style={styles.progressContainer}>
               <View style={styles.progressTextRow}>
                 <Text style={styles.progressLabel}>Progress Pembelajaran:</Text>
-                <Text style={styles.progressPercentage}>12%</Text>
+                <Text style={styles.progressPercentage}>{progressPercent}%</Text>
               </View>
               <View style={styles.progressBarTrack}>
-                <View style={[styles.progressBarFill, { width: '18%' }]} />
+                <View style={[styles.progressBarFill, { width: `${progressPercent}%` }]} />
               </View>
             </View>
 
@@ -88,36 +108,39 @@ export default function DashboardScreen() {
               activeOpacity={0.88}
               onPress={() => router.push('/(tabs)/jurusan')}
             >
-              <Text style={styles.continueButtonText}>Lanjut Belajar Yuk!</Text>
+              <Text style={styles.continueButtonText}>
+                {completedCount === 0 ? 'Mulai Belajar Sekarang!' : 'Lanjut Belajar Yuk!'}
+              </Text>
             </TouchableOpacity>
           </View>
 
           {/* Card 2: Smooth Curved Line Chart */}
-          <ExerciseGraphCard hasData={true} />
+          <ExerciseGraphCard hasData={completedCount > 0} />
 
           {/* Card 3: Rekomendasi Materi (Soft Light Blue Card) */}
           <View style={styles.recommendationCard}>
-            <Text style={styles.recTitle}>Rekomendasi Materi</Text>
+            <Text style={styles.recTitle}>Rekomendasi Modul Belajar</Text>
             <Text style={styles.recSubtitle}>
-              3 Saran materi yang bisa kamu perbaiki.
+              {completedCount === 0
+                ? 'Langkah awal terarah untuk memulai kompetensi kejuruanmu.'
+                : 'Materi pilihan berikutnya untuk memperkuat keahlianmu.'}
             </Text>
 
             <TouchableOpacity
               style={styles.materialItem}
               activeOpacity={0.85}
-              onPress={() => router.push('/materi/fisika-dasar')}
+              onPress={() => router.push('/materi/FND-01')}
             >
-              <Image
-                source={require('../../assets/fisika_icon.png')}
-                style={styles.materialIcon}
-                resizeMode="cover"
-              />
+              <View style={styles.materialIconWrapper}>
+                <Ionicons name="code-slash" size={24} color="#2B7BF6" />
+              </View>
               <View style={styles.materialInfo}>
-                <Text style={styles.materialTitle}>Fisika</Text>
+                <Text style={styles.materialTitle}>FND-01: Dasar Pemrograman & Komputasi</Text>
                 <Text style={styles.materialDesc}>
-                  Ya Itulah Intinya Ya Itulah Intinya
+                  Konsep algoritma, variabel, dan struktur kontrol dasar.
                 </Text>
               </View>
+              <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -289,6 +312,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  materialIconWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#EFF6FF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   materialIcon: {
     width: 48,

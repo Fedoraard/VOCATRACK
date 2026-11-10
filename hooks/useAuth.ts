@@ -47,28 +47,29 @@ export function useAuth() {
               profileData?.full_name ||
               profileData?.nama_lengkap ||
               data.user.user_metadata?.full_name ||
-              'Siswa Vokasi';
+              '';
             const resolvedSchool =
               profileData?.school ||
               profileData?.asal_sekolah ||
               data.user.user_metadata?.school ||
-              'SMK Binaan VocaTrack';
+              '';
             const resolvedMajor =
               profileData?.major ||
               profileData?.jurusan ||
               data.user.user_metadata?.major ||
-              'Rekayasa Perangkat Lunak';
+              '';
             const resolvedAvatar =
               profileData?.avatar_url ||
               profileData?.foto_profil ||
-              data.user.user_metadata?.avatar_url;
+              data.user.user_metadata?.avatar_url ||
+              '';
             const resolvedXp = typeof profileData?.total_xp === 'number' ? profileData.total_xp : 0;
             const resolvedLevel = typeof profileData?.level === 'number' ? profileData.level : 1;
 
             setUser({
               id: data.user.id,
               email: data.user.email || email,
-              namaLengkap: resolvedName,
+              namaLengkap: resolvedName || (data.user.email ? data.user.email.split('@')[0] : 'Siswa Vokasi'),
               asalSekolah: resolvedSchool,
               jurusanDiminati: resolvedMajor,
               fotoProfil: resolvedAvatar,
@@ -84,10 +85,10 @@ export function useAuth() {
             id: 'user-001',
             email,
             namaLengkap: 'Ahmad Faiz Al-Rasyid',
-            asalSekolah: 'SMKN 1 Cimahi',
-            jurusanDiminati: 'Rekayasa Perangkat Lunak',
-            totalXp: 850,
-            level: 3,
+            asalSekolah: '',
+            jurusanDiminati: '',
+            totalXp: 0,
+            level: 1,
           });
           return true;
         }
@@ -109,9 +110,9 @@ export function useAuth() {
 
       try {
         if (isSupabaseConfigured) {
-          const nameToSave = fullName?.trim() || 'Siswa Vokasi';
-          const schoolToSave = school?.trim() || 'SMK Binaan VocaTrack';
-          const defaultMajor = 'Rekayasa Perangkat Lunak';
+          const nameToSave = fullName?.trim() || (email.includes('@') ? email.split('@')[0] : 'Siswa Vokasi');
+          const schoolToSave = school?.trim() || '';
+          const defaultMajor = '';
 
           const { data, error } = await supabase.auth.signUp({
             email,
@@ -132,16 +133,19 @@ export function useAuth() {
           if (data.user) {
             // Coba simpan langsung ke tabel public.profiles di Supabase
             try {
-              await supabase.from('profiles').upsert({
-                id: data.user.id,
-                email: data.user.email || email,
-                full_name: nameToSave,
-                school: schoolToSave,
-                major: defaultMajor,
-                total_xp: 0,
-                level: 1,
-                updated_at: new Date().toISOString(),
-              });
+              await supabase.from('profiles').upsert(
+                {
+                  id: data.user.id,
+                  email: data.user.email || email,
+                  full_name: nameToSave,
+                  school: schoolToSave,
+                  major: defaultMajor,
+                  total_xp: 0,
+                  level: 1,
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: 'id' }
+              );
             } catch {
               // Jika tabel profiles belum dibuat, data tetap aman di auth metadata
             }
@@ -164,10 +168,10 @@ export function useAuth() {
             id: 'user-001',
             email,
             namaLengkap: fullName || 'Ahmad Faiz Al-Rasyid',
-            asalSekolah: school || 'SMKN 1 Cimahi',
-            jurusanDiminati: 'Rekayasa Perangkat Lunak',
-            totalXp: 850,
-            level: 3,
+            asalSekolah: school || '',
+            jurusanDiminati: '',
+            totalXp: 0,
+            level: 1,
           });
           return true;
         }
@@ -360,26 +364,33 @@ export function useAuth() {
 
           const { error } = await supabase.auth.updateUser({
             data: {
-              ...(updates.namaLengkap && { full_name: updates.namaLengkap }),
-              ...(updates.asalSekolah && { school: updates.asalSekolah }),
-              ...(updates.jurusanDiminati && { major: updates.jurusanDiminati }),
-              ...(updates.fotoProfil && { avatar_url: updates.fotoProfil }),
+              ...(updates.namaLengkap !== undefined && { full_name: updates.namaLengkap }),
+              ...(updates.asalSekolah !== undefined && { school: updates.asalSekolah }),
+              ...(updates.jurusanDiminati !== undefined && { major: updates.jurusanDiminati }),
+              ...(updates.fotoProfil !== undefined && { avatar_url: updates.fotoProfil }),
             },
           });
           if (error) throw error;
 
           if (currentUser) {
             try {
-              await supabase.from('profiles').upsert({
-                id: currentUser.id,
-                ...(updates.namaLengkap && { full_name: updates.namaLengkap }),
-                ...(updates.asalSekolah && { school: updates.asalSekolah }),
-                ...(updates.jurusanDiminati && { major: updates.jurusanDiminati }),
-                ...(updates.fotoProfil && { avatar_url: updates.fotoProfil }),
-                updated_at: new Date().toISOString(),
-              });
-            } catch {
-              // Abaikan jika tabel profiles belum dibuat
+              const fullNameToSave = updates.namaLengkap || currentUser.user_metadata?.full_name || 'Siswa Vokasi';
+              const emailToSave = currentUser.email || '';
+
+              await supabase.from('profiles').upsert(
+                {
+                  id: currentUser.id,
+                  email: emailToSave,
+                  full_name: fullNameToSave,
+                  ...(updates.asalSekolah !== undefined && { school: updates.asalSekolah }),
+                  ...(updates.jurusanDiminati !== undefined && { major: updates.jurusanDiminati }),
+                  ...(updates.fotoProfil !== undefined && { avatar_url: updates.fotoProfil }),
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: 'id' }
+              );
+            } catch (err) {
+              console.warn('Gagal upsert profile ke Supabase:', err);
             }
           }
         }
