@@ -31,13 +31,49 @@ export function useAuth() {
           }
 
           if (data.user) {
+            let profileData: any = null;
+            try {
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .maybeSingle();
+              profileData = profile;
+            } catch {
+              // Abaikan jika tabel belum ada
+            }
+
+            const resolvedName =
+              profileData?.full_name ||
+              profileData?.nama_lengkap ||
+              data.user.user_metadata?.full_name ||
+              'Siswa Vokasi';
+            const resolvedSchool =
+              profileData?.school ||
+              profileData?.asal_sekolah ||
+              data.user.user_metadata?.school ||
+              'SMK Binaan VocaTrack';
+            const resolvedMajor =
+              profileData?.major ||
+              profileData?.jurusan ||
+              data.user.user_metadata?.major ||
+              'Rekayasa Perangkat Lunak';
+            const resolvedAvatar =
+              profileData?.avatar_url ||
+              profileData?.foto_profil ||
+              data.user.user_metadata?.avatar_url;
+            const resolvedXp = typeof profileData?.total_xp === 'number' ? profileData.total_xp : 0;
+            const resolvedLevel = typeof profileData?.level === 'number' ? profileData.level : 1;
+
             setUser({
               id: data.user.id,
               email: data.user.email || email,
-              namaLengkap: data.user.user_metadata?.full_name || 'Siswa Vokasi',
-              asalSekolah: data.user.user_metadata?.school || 'SMK Binaan VocaTrack',
-              totalXp: 0,
-              level: 1,
+              namaLengkap: resolvedName,
+              asalSekolah: resolvedSchool,
+              jurusanDiminati: resolvedMajor,
+              fotoProfil: resolvedAvatar,
+              totalXp: resolvedXp,
+              level: resolvedLevel,
             });
             return true;
           }
@@ -73,13 +109,18 @@ export function useAuth() {
 
       try {
         if (isSupabaseConfigured) {
+          const nameToSave = fullName?.trim() || 'Siswa Vokasi';
+          const schoolToSave = school?.trim() || 'SMK Binaan VocaTrack';
+          const defaultMajor = 'Rekayasa Perangkat Lunak';
+
           const { data, error } = await supabase.auth.signUp({
             email,
             password: pass,
             options: {
               data: {
-                full_name: fullName || 'Siswa Vokasi',
-                school: school || 'SMK Binaan VocaTrack',
+                full_name: nameToSave,
+                school: schoolToSave,
+                major: defaultMajor,
               },
             },
           });
@@ -89,11 +130,28 @@ export function useAuth() {
           }
 
           if (data.user) {
+            // Coba simpan langsung ke tabel public.profiles di Supabase
+            try {
+              await supabase.from('profiles').upsert({
+                id: data.user.id,
+                email: data.user.email || email,
+                full_name: nameToSave,
+                school: schoolToSave,
+                major: defaultMajor,
+                total_xp: 0,
+                level: 1,
+                updated_at: new Date().toISOString(),
+              });
+            } catch {
+              // Jika tabel profiles belum dibuat, data tetap aman di auth metadata
+            }
+
             setUser({
               id: data.user.id,
               email: data.user.email || email,
-              namaLengkap: data.user.user_metadata?.full_name || fullName || 'Siswa Vokasi',
-              asalSekolah: data.user.user_metadata?.school || school || 'SMK Binaan VocaTrack',
+              namaLengkap: nameToSave,
+              asalSekolah: schoolToSave,
+              jurusanDiminati: defaultMajor,
               totalXp: 0,
               level: 1,
             });
@@ -298,6 +356,8 @@ export function useAuth() {
       setErrorMessage(null);
       try {
         if (isSupabaseConfigured) {
+          const { data: { user: currentUser } } = await supabase.auth.getUser();
+
           const { error } = await supabase.auth.updateUser({
             data: {
               ...(updates.namaLengkap && { full_name: updates.namaLengkap }),
@@ -307,6 +367,21 @@ export function useAuth() {
             },
           });
           if (error) throw error;
+
+          if (currentUser) {
+            try {
+              await supabase.from('profiles').upsert({
+                id: currentUser.id,
+                ...(updates.namaLengkap && { full_name: updates.namaLengkap }),
+                ...(updates.asalSekolah && { school: updates.asalSekolah }),
+                ...(updates.jurusanDiminati && { major: updates.jurusanDiminati }),
+                ...(updates.fotoProfil && { avatar_url: updates.fotoProfil }),
+                updated_at: new Date().toISOString(),
+              });
+            } catch {
+              // Abaikan jika tabel profiles belum dibuat
+            }
+          }
         }
         updateStoreProfile(updates);
         return true;

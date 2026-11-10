@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,9 +29,9 @@ const PRESET_AVATARS = [
 
 export default function ProfileScreen() {
   const { user, logout, updateProfile } = useAuth();
-  const displayName = user?.namaLengkap || 'dipdut';
-  const displayEmail = user?.email || 'dipagntg12@gmail.com';
-  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Teknik Komputer Jaringan';
+  const displayName = user?.namaLengkap || 'Siswa Vokasi';
+  const displayEmail = user?.email || '-';
+  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Rekayasa Perangkat Lunak';
 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [formName, setFormName] = useState(displayName);
@@ -83,6 +84,19 @@ export default function ProfileScreen() {
   };
 
   const handleLogout = async () => {
+    const doLogout = async () => {
+      await logout();
+      router.replace('/(auth)/welcome');
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmed = typeof window !== 'undefined' ? window.confirm('Apakah Anda yakin ingin keluar dari akun VocaTrack?') : true;
+      if (confirmed) {
+        await doLogout();
+      }
+      return;
+    }
+
     Alert.alert(
       'Konfirmasi Keluar',
       'Apakah Anda yakin ingin keluar dari akun VocaTrack?',
@@ -91,10 +105,7 @@ export default function ProfileScreen() {
         {
           text: 'Keluar',
           style: 'destructive',
-          onPress: async () => {
-            await logout();
-            router.replace('/(auth)/welcome');
-          },
+          onPress: doLogout,
         },
       ]
     );

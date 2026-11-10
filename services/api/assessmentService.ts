@@ -8,6 +8,7 @@ import {
 import { FEDORA_QUESTION_BANKS, BankQuestion } from '../../content/fedora/questionBanks';
 import { ALL_CURRICULUM_MODULES } from './curriculumService';
 import { StorageService } from '../offline/storageService';
+import { supabase, isSupabaseConfigured } from '../../utils/supabase';
 
 /**
  * ASSESSMENT SERVICE ADAPTER (CT-05, CT-06)
@@ -102,6 +103,23 @@ export class AssessmentService {
       bankQuestions: bank,
     });
 
+    // Simpan pencatatan sesi evaluasi resmi ke Supabase jika terhubung
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('official_evaluations').insert({
+          attempt_id: attempt.attemptId,
+          student_id: studentId,
+          module_id: moduleId,
+          started_at: attempt.startedAt,
+          deadline_at: attempt.deadlineAt,
+          status: 'ACTIVE',
+          answers: [],
+        });
+      } catch (err) {
+        console.warn('Gagal mencatat evaluasi ke Supabase:', err);
+      }
+    }
+
     return attempt;
   }
 
@@ -186,6 +204,24 @@ export class AssessmentService {
     // Simpan ke riwayat penyimpanan lokal terisolasi
     await this.saveResultToHistory(studentId, officialResult);
 
+    // Simpan hasil penilaian resmi ke Supabase
+    if (isSupabaseConfigured) {
+      try {
+        await supabase
+          .from('official_evaluations')
+          .update({
+            submitted_at: now.toISOString(),
+            answers: answers,
+            score: finalScore,
+            is_passed: isPassed,
+            status: 'GRADED',
+          })
+          .eq('attempt_id', attemptId);
+      } catch (err) {
+        console.warn('Gagal menyimpan hasil evaluasi ke Supabase:', err);
+      }
+    }
+
     return officialResult;
   }
 
@@ -199,6 +235,40 @@ export class AssessmentService {
   ): Promise<OfficialResult[]> {
     const historyKey = `history_eval_${moduleId}`;
     const stored = await StorageService.getItem<OfficialResult[]>(studentId, historyKey);
+
+    // Coba ambil riwayat dari Supabase
+    if (isSupabaseConfigured) {
+      try {
+        const { data: rows, error } = await supabase
+          .from('official_evaluations')
+          .select('*')
+          .eq('student_id', studentId)
+          .eq('module_id', moduleId)
+          .eq('status', 'GRADED')
+          .order('created_at', { ascending: true });
+
+        if (!error && rows && rows.length > 0) {
+          const fromSupabase: OfficialResult[] = rows.map((r, idx) => ({
+            resultId: `res-${r.attempt_id}`,
+            attemptId: r.attempt_id,
+            moduleId: r.module_id,
+            score: typeof r.score === 'number' ? r.score : 0,
+            isPassed: Boolean(r.is_passed),
+            totalQuestions: 20,
+            correctAnswersCount: Math.round(((r.score ?? 0) / 100) * 20),
+            answeredCount: Array.isArray(r.answers) ? r.answers.length : 20,
+            gradingVersion: 'grd-v1.0.0',
+            finalizedAt: r.submitted_at || r.created_at,
+            attemptSequence: idx + 1,
+            explanations: [],
+          }));
+          return fromSupabase;
+        }
+      } catch (err) {
+        // Fallback ke cache lokal
+      }
+    }
+
     return stored || [];
   }
 

@@ -28,11 +28,19 @@ export default function LoginScreen() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
   const { login, loading, errorMessage } = useAuth();
 
   const handleLogin = async () => {
-    const emailToUse = identifier.trim() || 'siswa.vokasi@vocatrack.id';
-    const passwordToUse = password || 'vokasi2026';
+    setLocalError(null);
+    const emailToUse = identifier.trim();
+    const passwordToUse = password;
+
+    if (!emailToUse || !passwordToUse) {
+      setLocalError('Mohon masukkan email/username dan kata sandi.');
+      return;
+    }
+
     const success = await login(emailToUse, passwordToUse);
     if (success) {
       router.replace('/(tabs)');
@@ -111,10 +119,10 @@ export default function LoginScreen() {
             </Text>
 
             {/* Error Message if any */}
-            {Boolean(errorMessage) && (
+            {Boolean(localError || errorMessage) && (
               <View style={styles.errorBox}>
                 <Ionicons name="alert-circle" size={16} color="#DC2626" />
-                <Text style={styles.errorText}>{errorMessage}</Text>
+                <Text style={styles.errorText}>{localError || errorMessage}</Text>
               </View>
             )}
 

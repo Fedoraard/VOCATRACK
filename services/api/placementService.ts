@@ -4,6 +4,7 @@ import {
   PlacementResult,
 } from '../../types/contracts';
 import { StorageService } from '../offline/storageService';
+import { supabase, isSupabaseConfigured } from '../../utils/supabase';
 
 /**
  * PLACEMENT SERVICE ADAPTER (CT-04, F-02, T-52)
@@ -156,6 +157,21 @@ export class PlacementService {
     // Simpan hasil pemeriksaan awal di storage lokal akun
     await StorageService.setItem(studentId, 'placement_result', result);
 
+    // Simpan ke Supabase jika terhubung
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('placement_results').insert({
+          student_id: studentId,
+          answers: answers,
+          recommended_start_module_id: rekomendasiTitikMulai,
+          eligible_module_ids: eligibleDirectEvaluations,
+          evaluated_at: result.evaluatedAt,
+        });
+      } catch (err) {
+        console.warn('Gagal simpan placement_results ke Supabase:', err);
+      }
+    }
+
     return result;
   }
 
@@ -163,6 +179,30 @@ export class PlacementService {
    * Mengambil hasil pemeriksaan awal yang pernah disimpan
    */
   public static async getSavedPlacementResult(studentId: string): Promise<PlacementResult | null> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data: row } = await supabase
+          .from('placement_results')
+          .select('*')
+          .eq('student_id', studentId)
+          .order('evaluated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (row) {
+          return {
+            packageVersionId: 'plc-pkg-v1.0.0',
+            rekomendasiTitikMulaiModuleId: row.recommended_start_module_id,
+            eligibleDirectEvaluationModuleIds: row.eligible_module_ids || [],
+            summaryNote: 'Hasil pemeriksaan kemampuan awal terverifikasi dari database.',
+            evaluatedAt: row.evaluated_at,
+          };
+        }
+      } catch {
+        // Fallback ke penyimpanan lokal
+      }
+    }
+
     return StorageService.getItem<PlacementResult>(studentId, 'placement_result');
   }
 }

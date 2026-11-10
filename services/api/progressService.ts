@@ -7,15 +7,17 @@ import {
 import { StorageService } from '../offline/storageService';
 import { CurriculumService, ALL_CURRICULUM_MODULES } from './curriculumService';
 import { AssessmentService } from './assessmentService';
+import { supabase, isSupabaseConfigured } from '../../utils/supabase';
 
 /**
  * PROGRESS SERVICE ADAPTER (CT-07, F-03, F-04, F-08)
  * Mengelola preferensi mode belajar (Mode Terarah vs Eksplorasi),
  * target karir, serta proyeksi status penguasaan 9 modul kurikulum.
+ * Terhubung langsung ke Supabase dengan fallback penyimpanan lokal (offline-first).
  */
 
 export class ProgressService {
-  public static readonly IS_MOCK = true;
+  public static readonly IS_MOCK = !isSupabaseConfigured;
 
   /**
    * Mengambil proyeksi progres lengkap siswa
@@ -24,9 +26,46 @@ export class ProgressService {
     const key = 'student_progress';
     let stored = await StorageService.getItem<ProgressProjection>(studentId, key);
 
+    // Coba sinkronisasi dari Supabase jika terhubung
+    if (isSupabaseConfigured) {
+      try {
+        const { data: rows, error } = await supabase
+          .from('student_progress')
+          .select('*')
+          .eq('student_id', studentId);
+
+        if (!error && rows && rows.length > 0) {
+          const initial = stored || this.buildInitialProgress(studentId);
+          for (const row of rows) {
+            if (initial.modules[row.module_id]) {
+              initial.modules[row.module_id] = {
+                moduleId: row.module_id,
+                isUnlocked: Boolean(row.is_unlocked),
+                isReadCompleted: Boolean(row.is_read_completed),
+                isVideoCompleted100: Boolean(row.is_video_completed),
+                practiceAnsweredCount: row.practice_answered_count || 0,
+                hasPassedHistorically: Boolean(row.has_passed_historically),
+                latestScore: typeof row.latest_score === 'number' ? row.latest_score : null,
+                totalAttempts: row.total_attempts || 0,
+              };
+            }
+          }
+          await this.recalculateUnlocks(studentId, initial);
+          await StorageService.setItem(studentId, key, initial);
+          return initial;
+        }
+      } catch (err) {
+        console.warn('Gagal membaca progress dari Supabase, menggunakan cache lokal:', err);
+      }
+    }
+
     if (!stored) {
       stored = this.buildInitialProgress(studentId);
       await StorageService.setItem(studentId, key, stored);
+      // Simpan baseline awal ke Supabase jika memungkinkan
+      if (isSupabaseConfigured) {
+        this.syncAllModulesToSupabase(studentId, stored).catch(() => {});
+      }
     } else {
       // Re-evaluasi unlocked status berdasarkan modul yang telah lulus secara historis
       await this.recalculateUnlocks(studentId, stored);
@@ -53,6 +92,19 @@ export class ProgressService {
 
     await this.recalculateUnlocks(studentId, current);
     await StorageService.setItem(studentId, 'student_progress', current);
+
+    // Sync preferensi karir ke profiles di Supabase jika ada
+    if (isSupabaseConfigured && targetCareer) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({ major: targetCareer === 'FRONTEND' ? 'Frontend Web Developer' : targetCareer === 'BACKEND' ? 'Backend Developer' : 'Mobile App Developer' })
+          .eq('id', studentId);
+      } catch {
+        // Abaikan
+      }
+    }
+
     return current;
   }
 
@@ -69,6 +121,7 @@ export class ProgressService {
       current.version += 1;
       current.updatedAt = new Date().toISOString();
       await StorageService.setItem(studentId, 'student_progress', current);
+      await this.syncModuleToSupabase(studentId, current.modules[moduleId]);
     }
     return current;
   }
@@ -86,6 +139,7 @@ export class ProgressService {
       current.version += 1;
       current.updatedAt = new Date().toISOString();
       await StorageService.setItem(studentId, 'student_progress', current);
+      await this.syncModuleToSupabase(studentId, current.modules[moduleId]);
     }
     return current;
   }
@@ -103,6 +157,7 @@ export class ProgressService {
       current.version += 1;
       current.updatedAt = new Date().toISOString();
       await StorageService.setItem(studentId, 'student_progress', current);
+      await this.syncModuleToSupabase(studentId, current.modules[moduleId]);
     }
     return current;
   }
@@ -126,9 +181,67 @@ export class ProgressService {
 
       await this.recalculateUnlocks(studentId, current);
       await StorageService.setItem(studentId, 'student_progress', current);
+      await this.syncModuleToSupabase(studentId, current.modules[moduleId]);
     }
 
     return current;
+  }
+
+  /**
+   * Helper sinkronisasi satu modul ke Supabase
+   */
+  private static async syncModuleToSupabase(
+    studentId: string,
+    mod: ModuleProgress
+  ): Promise<void> {
+    if (!isSupabaseConfigured) return;
+    try {
+      await supabase.from('student_progress').upsert(
+        {
+          student_id: studentId,
+          module_id: mod.moduleId,
+          is_unlocked: mod.isUnlocked,
+          is_read_completed: mod.isReadCompleted,
+          is_video_completed: mod.isVideoCompleted100,
+          practice_answered_count: mod.practiceAnsweredCount,
+          has_passed_historically: mod.hasPassedHistorically,
+          latest_score: mod.latestScore,
+          total_attempts: mod.totalAttempts,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'student_id,module_id' }
+      );
+    } catch (err) {
+      console.warn(`Gagal sync modul ${mod.moduleId} ke Supabase:`, err);
+    }
+  }
+
+  /**
+   * Helper sinkronisasi seluruh modul awal ke Supabase
+   */
+  private static async syncAllModulesToSupabase(
+    studentId: string,
+    projection: ProgressProjection
+  ): Promise<void> {
+    if (!isSupabaseConfigured) return;
+    const records = Object.values(projection.modules).map((m) => ({
+      student_id: studentId,
+      module_id: m.moduleId,
+      is_unlocked: m.isUnlocked,
+      is_read_completed: m.isReadCompleted,
+      is_video_completed: m.isVideoCompleted100,
+      practice_answered_count: m.practiceAnsweredCount,
+      has_passed_historically: m.hasPassedHistorically,
+      latest_score: m.latestScore,
+      total_attempts: m.totalAttempts,
+      updated_at: new Date().toISOString(),
+    }));
+
+    try {
+      await supabase.from('student_progress').upsert(records, { onConflict: 'student_id,module_id' });
+    } catch (err) {
+      console.warn('Gagal sync baseline modul ke Supabase:', err);
+    }
   }
 
   private static buildInitialProgress(studentId: string): ProgressProjection {

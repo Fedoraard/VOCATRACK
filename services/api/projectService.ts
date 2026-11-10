@@ -5,6 +5,7 @@ import {
   CareerTrackId,
 } from '../../types/contracts';
 import { StorageService } from '../offline/storageService';
+import { supabase, isSupabaseConfigured } from '../../utils/supabase';
 
 /**
  * PROJECT & REVIEW SERVICE ADAPTER (CT-10, CT-11, CT-12, F-12, F-13, T-67, T-70)
@@ -125,6 +126,22 @@ export class ProjectService {
     // Simpan juga ke antrean reviewer internal global mock
     await this.addGlobalReviewQueue(submission);
 
+    // Simpan ke Supabase jika terhubung
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('project_submissions').insert({
+          student_id: studentId,
+          track_id: careerId,
+          repo_url: repositoryUrl.trim(),
+          commit_hash: commitHash.trim(),
+          demo_url: demoVideoUrl.trim(),
+          status: 'SUBMITTED',
+        });
+      } catch (err) {
+        console.warn('Gagal simpan project_submissions ke Supabase:', err);
+      }
+    }
+
     return submission;
   }
 
@@ -137,6 +154,45 @@ export class ProjectService {
   ): Promise<ProjectSubmission[]> {
     const key = `submissions_${careerId}`;
     const stored = await StorageService.getItem<ProjectSubmission[]>(studentId, key);
+
+    // Coba ambil dari Supabase
+    if (isSupabaseConfigured) {
+      try {
+        const { data: rows, error } = await supabase
+          .from('project_submissions')
+          .select('*')
+          .eq('student_id', studentId)
+          .eq('track_id', careerId)
+          .order('submitted_at', { ascending: false });
+
+        if (!error && rows && rows.length > 0) {
+          const fromSupabase: ProjectSubmission[] = rows.map((r) => ({
+            submissionId: r.id,
+            studentId: r.student_id,
+            studentName: 'Siswa VocaTrack',
+            careerId: r.track_id as CareerTrackId,
+            briefId: `brief-${r.track_id.toLowerCase()}-01`,
+            repositoryUrl: r.repo_url,
+            commitHash: r.commit_hash,
+            runInstructions: '',
+            demoVideoUrl: r.demo_url || '',
+            status: r.status === 'ACCEPTED' || r.status === 'PASSED' ? 'PASSED' : r.status === 'REVISE' || r.status === 'NEEDS_REVISION' ? 'NEEDS_REVISION' : 'TECHNICAL_REVIEW',
+            submittedAt: r.submitted_at,
+            humanReview: r.rubric_scores ? {
+              reviewerId: r.reviewer_id || '',
+              reviewedAt: r.reviewed_at || '',
+              isPassed: r.status === 'ACCEPTED' || r.status === 'PASSED',
+              rubrics: r.rubric_scores,
+              overallNotes: r.reviewer_notes || '',
+            } : undefined,
+          }));
+          return fromSupabase;
+        }
+      } catch {
+        // Fallback ke penyimpanan lokal
+      }
+    }
+
     return stored || [];
   }
 

@@ -12,6 +12,7 @@ interface ActiveAssessmentSession {
 interface AppState {
   user: UserProfile | null;
   isAuthenticated: boolean;
+  isAuthReady: boolean;
   selectedJurusanId: string;
   jurusanList: JurusanVokasi[];
   nodes: NodeBab[];
@@ -24,6 +25,7 @@ interface AppState {
   
   // Actions
   setUser: (user: UserProfile | null) => void;
+  setIsAuthReady: (isAuthReady: boolean) => void;
   updateProfile: (profileData: Partial<UserProfile>) => void;
   setSelectedJurusanId: (id: string) => void;
   updateNodeStatus: (nodeId: string, status: SkillStatus) => void;
@@ -35,19 +37,10 @@ interface AppState {
   setActiveAssessment: (session: ActiveAssessmentSession | null) => void;
 }
 
-const DEFAULT_USER: UserProfile = {
-  id: 'user-001',
-  email: 'dipagntg12@gmail.com',
-  namaLengkap: 'Galuh',
-  asalSekolah: 'SMKN 1 Cimahi',
-  jurusanDiminati: 'Rekayasa Perangkat Lunak',
-  totalXp: 450,
-  level: 2,
-};
-
 export const useAppStore = create<AppState>((set) => ({
-  user: DEFAULT_USER,
-  isAuthenticated: true,
+  user: null,
+  isAuthenticated: false,
+  isAuthReady: false,
   selectedJurusanId: 'jur-01',
   jurusanList: MOCK_JURUSAN,
   nodes: MOCK_SKILL_TREE_NODES,
@@ -58,6 +51,7 @@ export const useAppStore = create<AppState>((set) => ({
   activeAssessment: null,
 
   setUser: (user) => set({ user, isAuthenticated: Boolean(user) }),
+  setIsAuthReady: (isAuthReady) => set({ isAuthReady }),
   updateProfile: (profileData) =>
     set((state) => ({
       user: state.user ? { ...state.user, ...profileData } : null,

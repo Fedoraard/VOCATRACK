@@ -17,13 +17,8 @@ import { useAppStore } from '../../store/useAppStore';
 export default function DashboardScreen() {
   const user = useAppStore((state) => state.user);
 
-  // Match the Figma reference image exact details:
-  // "Halo Galuh!", "Teknik Instalasi Tenaga Listrik", "25 Materi", "12%", "Lanjut Belajar Yuk!"
-  const displayName = user?.namaLengkap && user.namaLengkap !== 'DIVA WAHYU' ? user.namaLengkap : 'Galuh';
-  const displayMajor =
-    user?.jurusanDiminati && user.jurusanDiminati !== 'Teknik Komputer Jaringan'
-      ? user.jurusanDiminati
-      : 'Teknik Instalasi Tenaga Listrik';
+  const displayName = user?.namaLengkap || 'Siswa Vokasi';
+  const displayMajor = user?.jurusanDiminati || user?.asalSekolah || 'Rekayasa Perangkat Lunak';
 
   return (
     <View style={styles.container}>
